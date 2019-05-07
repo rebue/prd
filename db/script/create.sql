@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2019/5/7 9:20:05                             */
+/* Created on:     2019/5/7 9:38:24                             */
 /*==============================================================*/
 
 
@@ -46,7 +46,8 @@ create table PRD_PRODUCT
    OP_ID                bigint not null comment '操作人',
    CREATE_TIME          datetime not null comment '创建时间',
    PRODUCT_DESC         varchar(200) comment '产品描述',
-   primary key (ID)
+   primary key (ID),
+   unique key AK_PRODUCT_NAME (PRODUCT_NAME)
 );
 
 alter table PRD_PRODUCT comment '产品';
@@ -90,7 +91,8 @@ create table PRD_PRODUCT_SPEC
    CODE                 varchar(50) comment '规格编码',
    UNIT                 varchar(20) comment '单位',
    PIC_PATH             varchar(100) comment '图片路径',
-   primary key (ID)
+   primary key (ID),
+   unique key AK_PRODUCT_ID_NAME (PRODUCT_ID, NAME)
 );
 
 alter table PRD_PRODUCT_SPEC comment '产品规格';
@@ -105,7 +107,7 @@ create table PRD_PRODUCT_SPEC_ATTR
    ATTR_NAME            varchar(50) not null comment '属性名称',
    ATTR_VALUE           varchar(50) not null comment '属性值',
    primary key (ID),
-   key AK_ONLINE_SPEC_AND_ATTR_NAME_AND_ATTR_VALUE (ATTR_NAME, ATTR_VALUE)
+   unique key AK_PRODUCT_SPEC_ID_AND_ATTR_NAME (ATTR_NAME, PRODUCT_SPEC_ID)
 );
 
 alter table PRD_PRODUCT_SPEC_ATTR comment '产品规格属性';
