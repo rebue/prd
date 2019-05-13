@@ -2,5 +2,13 @@ target
 .classpath
 .project
 .settings
-logs
 pom.xml.versionsBackup
+logs
+.DS_Store
+*.pjb
+*.pdb
+*.ldb
+*.gz
+*.log.gz
+*.class
+rebel.xml
