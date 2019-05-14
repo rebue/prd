@@ -12,30 +12,30 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import rebue.prd.mo.PrdCategoryMo;
-import rebue.prd.svc.PrdCategorySvc;
+import rebue.prd.mo.PrdProductSpecCodeMo;
+import rebue.prd.svc.PrdProductSpecCodeSvc;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.IdRo;
 import rebue.robotech.ro.Ro;
 
 /**
- * 分类
+ * 产品规格编码
  *
  * @mbg.generated 自动生成的注释，如需修改本注释，请删除本行
  */
 @RestController
-public class PrdCategoryCtrl {
+public class PrdProductSpecCodeCtrl {
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    private static final Logger _log = LoggerFactory.getLogger(PrdCategoryCtrl.class);
+    private static final Logger _log = LoggerFactory.getLogger(PrdProductSpecCodeCtrl.class);
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
     @Resource
-    private PrdCategorySvc svc;
+    private PrdProductSpecCodeSvc svc;
 
     /**
      * 有唯一约束的字段名称
@@ -45,13 +45,13 @@ public class PrdCategoryCtrl {
     private String _uniqueFilesName = "某字段内容";
 
     /**
-     * 添加分类
+     * 添加产品规格编码
      *
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @PostMapping("/prd/category")
-    IdRo add(@RequestBody PrdCategoryMo mo) throws Exception {
-        _log.info("add PrdCategoryMo: {}", mo);
+    @PostMapping("/prd/productspeccode")
+    IdRo add(@RequestBody PrdProductSpecCodeMo mo) throws Exception {
+        _log.info("add PrdProductSpecCodeMo: {}", mo);
         IdRo ro = new IdRo();
         try {
             int result = svc.add(mo);
@@ -85,13 +85,13 @@ public class PrdCategoryCtrl {
     }
 
     /**
-     * 修改分类
+     * 修改产品规格编码
      *
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @PutMapping("/prd/category")
-    Ro modify(@RequestBody PrdCategoryMo mo) throws Exception {
-        _log.info("modify PrdCategoryMo: {}", mo);
+    @PutMapping("/prd/productspeccode")
+    Ro modify(@RequestBody PrdProductSpecCodeMo mo) throws Exception {
+        _log.info("modify PrdProductSpecCodeMo: {}", mo);
         Ro ro = new Ro();
         try {
             if (svc.modify(mo) == 1) {
@@ -123,13 +123,13 @@ public class PrdCategoryCtrl {
     }
 
     /**
-     * 删除分类
+     * 删除产品规格编码
      *
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @DeleteMapping("/prd/category")
+    @DeleteMapping("/prd/productspeccode")
     Ro del(@RequestParam("id") java.lang.Long id) {
-        _log.info("del PrdCategoryMo by id: {}", id);
+        _log.info("del PrdProductSpecCodeMo by id: {}", id);
         int result = svc.del(id);
         Ro ro = new Ro();
         if (result == 1) {
@@ -148,35 +148,35 @@ public class PrdCategoryCtrl {
     }
 
     /**
-     * 查询分类
+     * 查询产品规格编码
      *
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @GetMapping("/prd/category")
-    PageInfo<PrdCategoryMo> list(PrdCategoryMo mo, @RequestParam(value = "pageNum", required = false) Integer pageNum, @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+    @GetMapping("/prd/productspeccode")
+    PageInfo<PrdProductSpecCodeMo> list(PrdProductSpecCodeMo mo, @RequestParam(value = "pageNum", required = false) Integer pageNum, @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         if (pageNum == null)
             pageNum = 1;
         if (pageSize == null)
             pageSize = 5;
-        _log.info("list PrdCategoryMo:" + mo + ", pageNum = " + pageNum + ", pageSize = " + pageSize);
+        _log.info("list PrdProductSpecCodeMo:" + mo + ", pageNum = " + pageNum + ", pageSize = " + pageSize);
         if (pageSize > 50) {
             String msg = "pageSize不能大于50";
             _log.error(msg);
             throw new IllegalArgumentException(msg);
         }
-        PageInfo<PrdCategoryMo> result = svc.list(mo, pageNum, pageSize);
+        PageInfo<PrdProductSpecCodeMo> result = svc.list(mo, pageNum, pageSize);
         _log.info("result: " + result);
         return result;
     }
 
     /**
-     * 获取单个分类
+     * 获取单个产品规格编码
      *
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @GetMapping("/prd/category/getbyid")
-    PrdCategoryMo getById(@RequestParam("id") java.lang.Long id) {
-        _log.info("get PrdCategoryMo by id: {}", id);
+    @GetMapping("/prd/productspeccode/getbyid")
+    PrdProductSpecCodeMo getById(@RequestParam("id") java.lang.Long id) {
+        _log.info("get PrdProductSpecCodeMo by id: {}", id);
         return svc.getById(id);
     }
 }

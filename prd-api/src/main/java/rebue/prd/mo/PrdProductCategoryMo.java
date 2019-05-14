@@ -8,81 +8,54 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
-产品
+产品分类
 
-数据库表: PRD_PRODUCT
+数据库表: PRD_PRODUCT_CATEGORY
 
 @mbg.generated 自动生成的注释，如需修改本注释，请删除本行
 */
 @JsonInclude(Include.NON_NULL)
-public class PrdProductMo implements Serializable {
+public class PrdProductCategoryMo implements Serializable {
     /**
-    产品ID
+    产品分类ID
     
-    数据库字段: PRD_PRODUCT.ID
+    数据库字段: PRD_PRODUCT_CATEGORY.ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
     private Long id;
 
     /**
-    产品分类ID
+    分类名称
     
-    数据库字段: PRD_PRODUCT.CATEGORY_ID
+    数据库字段: PRD_PRODUCT_CATEGORY.NAME
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    private Long categoryId;
+    private String name;
 
     /**
-    产品名称
+    分类编码
     
-    数据库字段: PRD_PRODUCT.PRODUCT_NAME
+    数据库字段: PRD_PRODUCT_CATEGORY.CODE
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    private String productName;
+    private String code;
 
     /**
     是否启用
     
-    数据库字段: PRD_PRODUCT.IS_ENABLED
+    数据库字段: PRD_PRODUCT_CATEGORY.IS_ENABLED
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
     private Boolean isEnabled;
 
     /**
-    生产厂家
+    操作人ID
     
-    数据库字段: PRD_PRODUCT.MANUFACTURER
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    private String manufacturer;
-
-    /**
-    品牌
-    
-    数据库字段: PRD_PRODUCT.BRAND
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    private String brand;
-
-    /**
-    产品详情路径
-    
-    数据库字段: PRD_PRODUCT.PRODUCT_DETAIL_PATH
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    private String productDetailPath;
-
-    /**
-    操作人
-    
-    数据库字段: PRD_PRODUCT.OP_ID
+    数据库字段: PRD_PRODUCT_CATEGORY.OP_ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -91,7 +64,7 @@ public class PrdProductMo implements Serializable {
     /**
     创建时间
     
-    数据库字段: PRD_PRODUCT.CREATE_TIME
+    数据库字段: PRD_PRODUCT_CATEGORY.CREATE_TIME
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -105,9 +78,9 @@ public class PrdProductMo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-    产品ID
+    产品分类ID
     
-    数据库字段: PRD_PRODUCT.ID
+    数据库字段: PRD_PRODUCT_CATEGORY.ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -116,9 +89,9 @@ public class PrdProductMo implements Serializable {
     }
 
     /**
-    产品ID
+    产品分类ID
     
-    数据库字段: PRD_PRODUCT.ID
+    数据库字段: PRD_PRODUCT_CATEGORY.ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -127,53 +100,53 @@ public class PrdProductMo implements Serializable {
     }
 
     /**
-    产品分类ID
+    分类名称
     
-    数据库字段: PRD_PRODUCT.CATEGORY_ID
+    数据库字段: PRD_PRODUCT_CATEGORY.NAME
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    public Long getCategoryId() {
-        return categoryId;
+    public String getName() {
+        return name;
     }
 
     /**
-    产品分类ID
+    分类名称
     
-    数据库字段: PRD_PRODUCT.CATEGORY_ID
+    数据库字段: PRD_PRODUCT_CATEGORY.NAME
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
-    产品名称
+    分类编码
     
-    数据库字段: PRD_PRODUCT.PRODUCT_NAME
+    数据库字段: PRD_PRODUCT_CATEGORY.CODE
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    public String getProductName() {
-        return productName;
+    public String getCode() {
+        return code;
     }
 
     /**
-    产品名称
+    分类编码
     
-    数据库字段: PRD_PRODUCT.PRODUCT_NAME
+    数据库字段: PRD_PRODUCT_CATEGORY.CODE
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /**
     是否启用
     
-    数据库字段: PRD_PRODUCT.IS_ENABLED
+    数据库字段: PRD_PRODUCT_CATEGORY.IS_ENABLED
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -184,7 +157,7 @@ public class PrdProductMo implements Serializable {
     /**
     是否启用
     
-    数据库字段: PRD_PRODUCT.IS_ENABLED
+    数据库字段: PRD_PRODUCT_CATEGORY.IS_ENABLED
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -193,75 +166,9 @@ public class PrdProductMo implements Serializable {
     }
 
     /**
-    生产厂家
+    操作人ID
     
-    数据库字段: PRD_PRODUCT.MANUFACTURER
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    /**
-    生产厂家
-    
-    数据库字段: PRD_PRODUCT.MANUFACTURER
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    /**
-    品牌
-    
-    数据库字段: PRD_PRODUCT.BRAND
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public String getBrand() {
-        return brand;
-    }
-
-    /**
-    品牌
-    
-    数据库字段: PRD_PRODUCT.BRAND
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    /**
-    产品详情路径
-    
-    数据库字段: PRD_PRODUCT.PRODUCT_DETAIL_PATH
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public String getProductDetailPath() {
-        return productDetailPath;
-    }
-
-    /**
-    产品详情路径
-    
-    数据库字段: PRD_PRODUCT.PRODUCT_DETAIL_PATH
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public void setProductDetailPath(String productDetailPath) {
-        this.productDetailPath = productDetailPath;
-    }
-
-    /**
-    操作人
-    
-    数据库字段: PRD_PRODUCT.OP_ID
+    数据库字段: PRD_PRODUCT_CATEGORY.OP_ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -270,9 +177,9 @@ public class PrdProductMo implements Serializable {
     }
 
     /**
-    操作人
+    操作人ID
     
-    数据库字段: PRD_PRODUCT.OP_ID
+    数据库字段: PRD_PRODUCT_CATEGORY.OP_ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -283,7 +190,7 @@ public class PrdProductMo implements Serializable {
     /**
     创建时间
     
-    数据库字段: PRD_PRODUCT.CREATE_TIME
+    数据库字段: PRD_PRODUCT_CATEGORY.CREATE_TIME
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -294,7 +201,7 @@ public class PrdProductMo implements Serializable {
     /**
     创建时间
     
-    数据库字段: PRD_PRODUCT.CREATE_TIME
+    数据库字段: PRD_PRODUCT_CATEGORY.CREATE_TIME
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -312,12 +219,9 @@ public class PrdProductMo implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", categoryId=").append(categoryId);
-        sb.append(", productName=").append(productName);
+        sb.append(", name=").append(name);
+        sb.append(", code=").append(code);
         sb.append(", isEnabled=").append(isEnabled);
-        sb.append(", manufacturer=").append(manufacturer);
-        sb.append(", brand=").append(brand);
-        sb.append(", productDetailPath=").append(productDetailPath);
         sb.append(", opId=").append(opId);
         sb.append(", createTime=").append(createTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -339,7 +243,7 @@ public class PrdProductMo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        PrdProductMo other = (PrdProductMo) that;
+        PrdProductCategoryMo other = (PrdProductCategoryMo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
         ;
     }

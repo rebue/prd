@@ -5,18 +5,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 
 /**
-产品规格属性
+产品规格编码
 
-数据库表: PRD_PRODUCT_SPEC_ATTR
+数据库表: PRD_PRODUCT_SPEC_CODE
 
 @mbg.generated 自动生成的注释，如需修改本注释，请删除本行
 */
 @JsonInclude(Include.NON_NULL)
-public class PrdProductSpecAttrMo implements Serializable {
+public class PrdProductSpecCodeMo implements Serializable {
     /**
-    产品规格属性ID
+    产品规格编码ID
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ID
+    数据库字段: PRD_PRODUCT_SPEC_CODE.ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -25,29 +25,20 @@ public class PrdProductSpecAttrMo implements Serializable {
     /**
     产品规格ID
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.PRODUCT_SPEC_ID
+    数据库字段: PRD_PRODUCT_SPEC_CODE.PRODUCT_SPEC_ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
     private Long productSpecId;
 
     /**
-    属性名称
+    产品规格编码(目前存放的是条形码)
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ATTR_NAME
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    private String attrName;
-
-    /**
-    属性值
-    
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ATTR_VALUE
+    数据库字段: PRD_PRODUCT_SPEC_CODE.CODE
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    private String attrValue;
+    private String code;
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
@@ -55,9 +46,9 @@ public class PrdProductSpecAttrMo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-    产品规格属性ID
+    产品规格编码ID
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ID
+    数据库字段: PRD_PRODUCT_SPEC_CODE.ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -66,9 +57,9 @@ public class PrdProductSpecAttrMo implements Serializable {
     }
 
     /**
-    产品规格属性ID
+    产品规格编码ID
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ID
+    数据库字段: PRD_PRODUCT_SPEC_CODE.ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -79,7 +70,7 @@ public class PrdProductSpecAttrMo implements Serializable {
     /**
     产品规格ID
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.PRODUCT_SPEC_ID
+    数据库字段: PRD_PRODUCT_SPEC_CODE.PRODUCT_SPEC_ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -90,7 +81,7 @@ public class PrdProductSpecAttrMo implements Serializable {
     /**
     产品规格ID
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.PRODUCT_SPEC_ID
+    数据库字段: PRD_PRODUCT_SPEC_CODE.PRODUCT_SPEC_ID
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
@@ -99,47 +90,25 @@ public class PrdProductSpecAttrMo implements Serializable {
     }
 
     /**
-    属性名称
+    产品规格编码(目前存放的是条形码)
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ATTR_NAME
+    数据库字段: PRD_PRODUCT_SPEC_CODE.CODE
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    public String getAttrName() {
-        return attrName;
+    public String getCode() {
+        return code;
     }
 
     /**
-    属性名称
+    产品规格编码(目前存放的是条形码)
     
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ATTR_NAME
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public void setAttrName(String attrName) {
-        this.attrName = attrName;
-    }
-
-    /**
-    属性值
-    
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ATTR_VALUE
+    数据库字段: PRD_PRODUCT_SPEC_CODE.CODE
     
     @mbg.generated 自动生成，如需修改，请删除本行
     */
-    public String getAttrValue() {
-        return attrValue;
-    }
-
-    /**
-    属性值
-    
-    数据库字段: PRD_PRODUCT_SPEC_ATTR.ATTR_VALUE
-    
-    @mbg.generated 自动生成，如需修改，请删除本行
-    */
-    public void setAttrValue(String attrValue) {
-        this.attrValue = attrValue;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /**
@@ -153,8 +122,7 @@ public class PrdProductSpecAttrMo implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", productSpecId=").append(productSpecId);
-        sb.append(", attrName=").append(attrName);
-        sb.append(", attrValue=").append(attrValue);
+        sb.append(", code=").append(code);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
@@ -174,7 +142,7 @@ public class PrdProductSpecAttrMo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        PrdProductSpecAttrMo other = (PrdProductSpecAttrMo) that;
+        PrdProductSpecCodeMo other = (PrdProductSpecCodeMo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
         ;
     }

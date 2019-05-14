@@ -1,31 +1,27 @@
 package rebue.prd.jo;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The persistent class for the PRD_CATEGORY database table.
+ * The persistent class for the PRD_PRODUCT_SPEC_CODE database table.
  * @mbg.generated 自动生成，如需修改，请删除本行
  */
 @Entity
-@Table(name = "PRD_CATEGORY")
+@Table(name = "PRD_PRODUCT_SPEC_CODE")
 @Getter
 @Setter
 @ToString
-public class PrdCategoryJo implements Serializable {
+public class PrdProductSpecCodeJo implements Serializable {
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
@@ -33,7 +29,7 @@ public class PrdCategoryJo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     *  产品分类ID
+     *  产品规格编码ID
      *
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */
@@ -43,58 +39,22 @@ public class PrdCategoryJo implements Serializable {
     private Long id;
 
     /**
-     *  分类名称
+     *  产品规格编码
      *
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */
     @Basic(optional = false)
-    @Column(name = "NAME", nullable = false, length = 50)
-    private String name;
-
-    /**
-     *  分类编码
-     *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
-     */
-    @Basic(optional = false)
-    @Column(name = "CODE", nullable = false, length = 50)
+    @Column(name = "CODE", nullable = false, length = 30)
     private String code;
 
     /**
-     *  是否启用
+     *  产品规格
      *
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @Basic(optional = false)
-    @Column(name = "IS_ENABLED", nullable = false, length = 3)
-    private Boolean isEnabled;
-
-    /**
-     *  操作人ID
-     *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
-     */
-    @Basic(optional = false)
-    @Column(name = "OP_ID", nullable = false, length = 19)
-    private Long opId;
-
-    /**
-     *  创建时间
-     *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
-     */
-    @Basic(optional = false)
-    @Column(name = "CREATE_TIME", nullable = false, length = 19)
-    @Temporal(TemporalType.DATE)
-    private Date createTime;
-
-    /**
-     *  产品分类列表
-     *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
-     */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
-    private List<PrdProductJo> prdProductList;
+    @JoinColumn(name = "PRODUCT_SPEC_ID", referencedColumnName = "ID", nullable = false)
+    @ManyToOne(optional = false)
+    private PrdProductSpecJo productSpec;
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
@@ -118,7 +78,7 @@ public class PrdCategoryJo implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        PrdCategoryJo other = (PrdCategoryJo) obj;
+        PrdProductSpecCodeJo other = (PrdProductSpecCodeJo) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

@@ -35,8 +35,8 @@ public class PrdProductPicJo implements Serializable {
      */
     @Id
     @Basic(optional = false)
-    @Column(name = "ID", nullable = false, length = 10)
-    private String id;
+    @Column(name = "ID", nullable = false, length = 19)
+    private Long id;
 
     /**
      *  图片类型

@@ -18,6 +18,8 @@ import rebue.wheel.RandomEx;
  */
 public class PrdProductPicTests {
 
+    private final String hostUrl = "http://127.0.0.1:9009";
+
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
@@ -40,7 +42,7 @@ public class PrdProductPicTests {
             final IdRo idRo = _objectMapper.readValue(addResult, IdRo.class);
             System.out.println(idRo);
             Assert.assertEquals(ResultDic.SUCCESS, idRo.getResult());
-            mo.setId(idRo.getId());
+            mo.setId(Long.valueOf(idRo.getId()));
         }
         final String listResult = OkhttpUtils.get(hostUrl + "/prd/productpic?pageNum=1&pageSize=5");
         System.out.println("查询产品图片的返回值为：" + listResult);
@@ -60,6 +62,4 @@ public class PrdProductPicTests {
         System.out.println(deleteRo);
         Assert.assertEquals(ResultDic.SUCCESS, deleteRo.getResult());
     }
-
-    private final String hostUrl = "http://127.0.0.1:9009";
 }

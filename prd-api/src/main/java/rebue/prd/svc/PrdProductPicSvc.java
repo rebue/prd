@@ -9,5 +9,5 @@ import rebue.robotech.svc.BaseSvc;
  *
  * @mbg.generated 自动生成的注释，如需修改本注释，请删除本行
  */
-public interface PrdProductPicSvc extends BaseSvc<java.lang.String, PrdProductPicMo, PrdProductPicJo> {
+public interface PrdProductPicSvc extends BaseSvc<java.lang.Long, PrdProductPicMo, PrdProductPicJo> {
 }

@@ -128,7 +128,7 @@ public class PrdProductPicCtrl {
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
     @DeleteMapping("/prd/productpic")
-    Ro del(@RequestParam("id") java.lang.String id) {
+    Ro del(@RequestParam("id") java.lang.Long id) {
         _log.info("del PrdProductPicMo by id: {}", id);
         int result = svc.del(id);
         Ro ro = new Ro();
@@ -175,7 +175,7 @@ public class PrdProductPicCtrl {
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
     @GetMapping("/prd/productpic/getbyid")
-    PrdProductPicMo getById(@RequestParam("id") java.lang.String id) {
+    PrdProductPicMo getById(@RequestParam("id") java.lang.Long id) {
         _log.info("get PrdProductPicMo by id: {}", id);
         return svc.getById(id);
     }

@@ -1,6 +1,7 @@
 package rebue.prd.jo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -46,18 +47,9 @@ public class PrdProductSpecJo implements Serializable {
      *
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @Basic(optional = true)
-    @Column(name = "NAME", nullable = true, length = 50)
+    @Basic(optional = false)
+    @Column(name = "NAME", nullable = false, length = 50)
     private String name;
-
-    /**
-     *  规格编码
-     *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
-     */
-    @Basic(optional = true)
-    @Column(name = "CODE", nullable = true, length = 50)
-    private String code;
 
     /**
      *  单位
@@ -67,6 +59,15 @@ public class PrdProductSpecJo implements Serializable {
     @Basic(optional = true)
     @Column(name = "UNIT", nullable = true, length = 20)
     private String unit;
+
+    /**
+     *  市场价格
+     *
+     *  @mbg.generated 自动生成，如需修改，请删除本行
+     */
+    @Basic(optional = true)
+    @Column(name = "MARKET_PRICE", nullable = true, precision = 20, scale = 4)
+    private BigDecimal marketPrice;
 
     /**
      *  图片路径
@@ -92,7 +93,7 @@ public class PrdProductSpecJo implements Serializable {
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productSpec")
-    private List<PrdProductBarcodeJo> prdProductBarcodeList;
+    private List<PrdProductSpecAttrJo> prdProductSpecAttrList;
 
     /**
      *  列表
@@ -100,7 +101,7 @@ public class PrdProductSpecJo implements Serializable {
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productSpec")
-    private List<PrdProductSpecAttrJo> prdProductSpecAttrList;
+    private List<PrdProductSpecCodeJo> prdProductSpecCodeList;
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行

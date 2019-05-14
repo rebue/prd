@@ -1,6 +1,5 @@
 package rebue.prd.svc.impl;
 
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ import rebue.robotech.svc.impl.BaseSvcImpl;
  */
 @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 @Service
-public class PrdProductPicSvcImpl extends BaseSvcImpl<java.lang.String, PrdProductPicJo, PrdProductPicDao, PrdProductPicMo, PrdProductPicMapper> implements PrdProductPicSvc {
+public class PrdProductPicSvcImpl extends BaseSvcImpl<java.lang.Long, PrdProductPicJo, PrdProductPicDao, PrdProductPicMo, PrdProductPicMapper> implements PrdProductPicSvc {
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
@@ -44,8 +43,8 @@ public class PrdProductPicSvcImpl extends BaseSvcImpl<java.lang.String, PrdProdu
     public int add(PrdProductPicMo mo) {
         _log.info("添加产品图片");
         // 如果id为空那么自动生成分布式id
-        if (mo.getId() == null || mo.getId().trim().isEmpty()) {
-            mo.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        if (mo.getId() == null || mo.getId() == 0) {
+            mo.setId(_idWorker.getId());
         }
         return super.add(mo);
     }

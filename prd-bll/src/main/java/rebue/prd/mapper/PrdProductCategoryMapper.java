@@ -2,11 +2,11 @@ package rebue.prd.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import rebue.prd.mo.PrdProductSpecAttrMo;
+import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.robotech.mapper.MybatisBaseMapper;
 
 @Mapper
-public interface PrdProductSpecAttrMapper extends MybatisBaseMapper<PrdProductSpecAttrMo, Long> {
+public interface PrdProductCategoryMapper extends MybatisBaseMapper<PrdProductCategoryMo, Long> {
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
@@ -15,37 +15,37 @@ public interface PrdProductSpecAttrMapper extends MybatisBaseMapper<PrdProductSp
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    int insert(PrdProductSpecAttrMo record);
+    int insert(PrdProductCategoryMo record);
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    int insertSelective(PrdProductSpecAttrMo record);
+    int insertSelective(PrdProductCategoryMo record);
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    PrdProductSpecAttrMo selectByPrimaryKey(Long id);
+    PrdProductCategoryMo selectByPrimaryKey(Long id);
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    int updateByPrimaryKeySelective(PrdProductSpecAttrMo record);
+    int updateByPrimaryKeySelective(PrdProductCategoryMo record);
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    int updateByPrimaryKey(PrdProductSpecAttrMo record);
+    int updateByPrimaryKey(PrdProductCategoryMo record);
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    List<PrdProductSpecAttrMo> selectAll();
+    List<PrdProductCategoryMo> selectAll();
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    List<PrdProductSpecAttrMo> selectSelective(PrdProductSpecAttrMo record);
+    List<PrdProductCategoryMo> selectSelective(PrdProductCategoryMo record);
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
@@ -55,10 +55,10 @@ public interface PrdProductSpecAttrMapper extends MybatisBaseMapper<PrdProductSp
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    boolean existSelective(PrdProductSpecAttrMo record);
+    boolean existSelective(PrdProductCategoryMo record);
 
     /**
     @mbg.generated 自动生成，如需修改，请删除本行
      */
-    int countSelective(PrdProductSpecAttrMo record);
+    int countSelective(PrdProductCategoryMo record);
 }

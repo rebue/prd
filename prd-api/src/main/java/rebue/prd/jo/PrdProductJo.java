@@ -81,6 +81,15 @@ public class PrdProductJo implements Serializable {
     private String brand;
 
     /**
+     *  产品详情路径
+     *
+     *  @mbg.generated 自动生成，如需修改，请删除本行
+     */
+    @Basic(optional = true)
+    @Column(name = "PRODUCT_DETAIL_PATH", nullable = true, length = 200)
+    private String productDetailPath;
+
+    /**
      *  操作人
      *
      *  @mbg.generated 自动生成，如需修改，请删除本行
@@ -100,22 +109,13 @@ public class PrdProductJo implements Serializable {
     private Date createTime;
 
     /**
-     *  产品描述
-     *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
-     */
-    @Basic(optional = true)
-    @Column(name = "PRODUCT_DESC", nullable = true, length = 200)
-    private String productDesc;
-
-    /**
      *  产品分类
      *
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */
     @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID", nullable = false)
     @ManyToOne(optional = false)
-    private PrdCategoryJo category;
+    private PrdProductCategoryJo category;
 
     /**
      *  产品列表

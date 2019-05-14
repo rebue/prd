@@ -5,15 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import rebue.prd.dao.PrdProductBarcodeDao;
-import rebue.prd.jo.PrdProductBarcodeJo;
-import rebue.prd.mapper.PrdProductBarcodeMapper;
-import rebue.prd.mo.PrdProductBarcodeMo;
-import rebue.prd.svc.PrdProductBarcodeSvc;
+import rebue.prd.dao.PrdProductCategoryDao;
+import rebue.prd.jo.PrdProductCategoryJo;
+import rebue.prd.mapper.PrdProductCategoryMapper;
+import rebue.prd.mo.PrdProductCategoryMo;
+import rebue.prd.svc.PrdProductCategorySvc;
 import rebue.robotech.svc.impl.BaseSvcImpl;
 
 /**
- * 产品条形码
+ * 产品分类
  *
  * 在单独使用不带任何参数的 @Transactional 注释时，
  * propagation(传播模式)=REQUIRED，readOnly=false，
@@ -28,20 +28,20 @@ import rebue.robotech.svc.impl.BaseSvcImpl;
  */
 @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 @Service
-public class PrdProductBarcodeSvcImpl extends BaseSvcImpl<java.lang.Long, PrdProductBarcodeJo, PrdProductBarcodeDao, PrdProductBarcodeMo, PrdProductBarcodeMapper> implements PrdProductBarcodeSvc {
+public class PrdProductCategorySvcImpl extends BaseSvcImpl<java.lang.Long, PrdProductCategoryJo, PrdProductCategoryDao, PrdProductCategoryMo, PrdProductCategoryMapper> implements PrdProductCategorySvc {
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    private static final Logger _log = LoggerFactory.getLogger(PrdProductBarcodeSvcImpl.class);
+    private static final Logger _log = LoggerFactory.getLogger(PrdProductCategorySvcImpl.class);
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public int add(PrdProductBarcodeMo mo) {
-        _log.info("添加产品条形码");
+    public int add(PrdProductCategoryMo mo) {
+        _log.info("添加产品分类");
         // 如果id为空那么自动生成分布式id
         if (mo.getId() == null || mo.getId() == 0) {
             mo.setId(_idWorker.getId());
