@@ -26,6 +26,12 @@
 				<artifactId>prd-bll</artifactId>
 				<version>1.0.9</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.github.rebue.ise</groupId>
+				<artifactId>ise-svr-feign</artifactId>
+				<version>1.0.8</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<modules>
@@ -33,5 +39,6 @@
 		<module>prd-api</module>
 		<module>prd-bll</module>
 		<module>prd-svr</module>
+		<module>prd-bar-code</module>
 	</modules>
 </project>
