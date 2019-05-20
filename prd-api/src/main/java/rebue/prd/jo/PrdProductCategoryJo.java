@@ -89,7 +89,16 @@ public class PrdProductCategoryJo implements Serializable {
     private Date createTime;
 
     /**
-     *  产品分类列表
+     *  以-隔开
+     *
+     *  @mbg.generated 自动生成，如需修改，请删除本行
+     */
+    @Basic(optional = false)
+    @Column(name = "FULL_NAME", nullable = false, length = 100)
+    private String fullName;
+
+    /**
+     *  列表
      *
      *  @mbg.generated 自动生成，如需修改，请删除本行
      */

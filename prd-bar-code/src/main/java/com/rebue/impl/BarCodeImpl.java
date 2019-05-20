@@ -1,6 +1,5 @@
 package com.rebue.impl;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,14 +11,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rebue.ro.MxnzpRo;
-
 import rebue.wheel.DbUtils;
-import rebue.wheel.Ean13Utils;
-import rebue.wheel.OkhttpUtils;
 import rebue.wheel.StrUtils;
 import rebue.wheel.idworker.IdWorker3;
 
@@ -51,16 +44,16 @@ public class BarCodeImpl {
 		}
 	}
 
-//	@Test
+	@Test
 	public void test02() throws SQLException {
 		// 连接数据库
 		Connection msSqlConn = DbUtils.getMsSqlConn();
-		List<Map<String, Object>> list = categoryTree(msSqlConn, "0", "");
+		List<Map<String, Object>> list = categoryTree(msSqlConn, "0", "", "");
 		System.out.println(String.valueOf(list));
 	}
 
-	public List<Map<String, Object>> categoryTree(Connection msSqlConn, String parentId, String classCode)
-			throws SQLException {
+	public List<Map<String, Object>> categoryTree(Connection msSqlConn, String parentId, String classCode,
+			String fullName) throws SQLException {
 		// 查询分类信息
 		String sql = "SELECT * FROM prd.vbl_goods_class where parentId=" + parentId;
 		PreparedStatement statement = msSqlConn.prepareStatement(sql);
@@ -77,20 +70,28 @@ public class BarCodeImpl {
 			String className = result.getString(3);
 			// 分类编码
 			String code = classCode + StrUtils.padLeft(String.valueOf(i++), 3, '0');
+			String newFullName = "";
+			if (fullName.equals("") || fullName == null || fullName.equals("null")) {
+				newFullName = className;
+			} else {
+				newFullName = fullName + "-" + className;
+			}
+			System.out.println(newFullName);
 			// 子分类
-			List<Map<String, Object>> categoryTree = categoryTree(msSqlConn, classId, code);
+			List<Map<String, Object>> categoryTree = categoryTree(msSqlConn, classId, code, newFullName);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("classId", classId);
 			map.put("className", className);
 			map.put("code", code);
 			map.put("sonClass", categoryTree);
+			map.put("fullName", newFullName);
 			list.add(map);
 
 			// 新分类id
 			Long newClassId = idWorker.getId();
-			String addSql = "INSERT INTO prd.PRD_PRODUCT_CATEGORY(ID,NAME,CODE,IS_ENABLED,OP_ID,CREATE_TIME)VALUES("
-					+ newClassId + ",'" + className + "','" + code + "',true,193201,'2019-05-13 16:13:46')";
-			System.out.println(addSql);
+			String addSql = "INSERT INTO prd.PRD_PRODUCT_CATEGORY(ID,NAME,CODE,IS_ENABLED,OP_ID,CREATE_TIME,FULL_NAME)VALUES("
+					+ newClassId + ",'" + className + "','" + code + "',true,193201,'2019-05-13 16:13:46','" + newFullName
+					+ "')";
 			PreparedStatement statementAdd = msSqlConn.prepareStatement(addSql);
 			int addClassResult = statementAdd.executeUpdate();
 			if (addClassResult != 1) {
@@ -100,7 +101,7 @@ public class BarCodeImpl {
 		return list;
 	}
 
-	@Test
+//	@Test
 	public void test03() throws SQLException {
 		// 连接数据库
 		Connection msSqlConn = DbUtils.getMsSqlConn();
