@@ -1,6 +1,8 @@
 package rebue.prd.svc.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,6 +13,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.dozermapper.core.Mapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import rebue.ise.ro.SaveFileRo;
 import rebue.ise.svr.feign.IserSvc;
@@ -22,6 +26,8 @@ import rebue.prd.mo.PrdProductMo;
 import rebue.prd.mo.PrdProductPicMo;
 import rebue.prd.mo.PrdProductSpecCodeMo;
 import rebue.prd.mo.PrdProductSpecMo;
+import rebue.prd.ro.PrdProductListRo;
+import rebue.prd.svc.PrdProductCategorySvc;
 import rebue.prd.svc.PrdProductPicSvc;
 import rebue.prd.svc.PrdProductSpecCodeSvc;
 import rebue.prd.svc.PrdProductSpecSvc;
@@ -67,6 +73,9 @@ public class PrdProductSvcImpl
 	private PrdProductPicSvc prdProductPicSvc;
 
 	@Resource
+	private PrdProductCategorySvc prdProductCategorySvc;
+
+	@Resource
 	private IserSvc iseSvc;
 
 	@Resource
@@ -110,7 +119,6 @@ public class PrdProductSvcImpl
 
 		SaveFileTo saveFileTo = new SaveFileTo();
 		saveFileTo.setContent(to.getProductDetail());
-		saveFileTo.setFileName(String.valueOf(productId));
 		saveFileTo.setFileType("html");
 		_log.info("添加产品信息保存产品详情文件的参数为：{}", saveFileTo);
 		SaveFileRo saveFileRo = iseSvc.saveFile(saveFileTo);
@@ -143,15 +151,11 @@ public class PrdProductSvcImpl
 		}
 
 		for (AddProductSpecTo addProductSpecTo : to.getSpec()) {
+			PrdProductSpecMo productSpecMo = dozerMapper.map(addProductSpecTo, PrdProductSpecMo.class);
 			// 产品规格ID
 			Long productSpecId = _idWorker.getId();
-			PrdProductSpecMo productSpecMo = new PrdProductSpecMo();
 			productSpecMo.setId(productSpecId);
 			productSpecMo.setProductId(productId);
-			productSpecMo.setName(addProductSpecTo.getProductSpecName());
-			productSpecMo.setUnit(addProductSpecTo.getUnit());
-			productSpecMo.setMarketPrice(addProductSpecTo.getMarketPrice());
-			productSpecMo.setPicPath(addProductSpecTo.getProductSpecPicPath());
 			_log.info("添加产品信息添加产品规格信息的参数为：{}", productSpecMo);
 			int addProductSpecResult = prdProductSpecSvc.add(productSpecMo);
 			_log.info("添加产品信息添加产品规格信息的返回值为：{}", addProductSpecResult);
@@ -163,7 +167,7 @@ public class PrdProductSvcImpl
 			PrdProductSpecCodeMo productSpecCodeMo = new PrdProductSpecCodeMo();
 			productSpecCodeMo.setId(_idWorker.getId());
 			productSpecCodeMo.setProductSpecId(productSpecId);
-			productSpecCodeMo.setCode(addProductSpecTo.getProductSpecCode());
+			productSpecCodeMo.setCode(addProductSpecTo.getCode());
 			_log.info("添加产品信息添加产品规格编码信息的参数为：{}", productSpecCodeMo);
 			int addProductSpecCodeResult = prdProductSpecCodeSvc.add(productSpecCodeMo);
 			_log.info("添加产品信息添加产品规格编码信息的返回值为：{}", addProductSpecCodeResult);
@@ -191,4 +195,35 @@ public class PrdProductSvcImpl
 		ro.setMsg("添加成功");
 		return ro;
 	}
+
+	/**
+	 * 查询产品分页信息
+	 * 
+	 * @param mo
+	 * @param pageNum
+	 * @param pageSize
+	 * @param orderBy
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public PageInfo<PrdProductListRo> pageList(PrdProductMo mo, Integer pageNum, final int pageSize,
+			final String orderBy) {
+		_log.info("分页查询产品信息的参数为：PrdProductMo-{}, pageNUm-{}, pageSize-{}, orderBy-{}", mo, pageNum, pageSize, orderBy);
+		PageInfo<PrdProductListRo> pageInfo = new PageInfo<PrdProductListRo>();
+		List<PrdProductListRo> list = new ArrayList<PrdProductListRo>();
+		PageInfo<PrdProductMo> selectPageInfo = PageHelper.startPage(pageNum, pageSize, orderBy)
+				.doSelectPageInfo(() -> _mapper.selectSelective(mo));
+		for (PrdProductMo prdProductMo : selectPageInfo.getList()) {
+			PrdProductListRo productListRo = dozerMapper.map(prdProductMo, PrdProductListRo.class);
+			String readFileResult = iseSvc.readFileByByte(prdProductMo.getProductDetailPath());
+			_log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
+			productListRo.setProductDetail(readFileResult);
+			list.add(productListRo);
+		}
+		pageInfo = dozerMapper.map(selectPageInfo, PageInfo.class);
+		pageInfo.setList(list);
+		return pageInfo;
+	}
+
 }

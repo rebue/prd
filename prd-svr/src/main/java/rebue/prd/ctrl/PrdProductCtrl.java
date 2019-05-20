@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rebue.prd.mo.PrdProductMo;
+import rebue.prd.ro.PrdProductListRo;
 import rebue.prd.svc.PrdProductSvc;
 import rebue.prd.to.AddProductTo;
 import rebue.robotech.dic.ResultDic;
@@ -44,9 +45,9 @@ public class PrdProductCtrl {
 	 */
 	@Resource
 	private PrdProductSvc svc;
-	
+
 	@Value("${debug:false}")
-    private Boolean isDebug;
+	private Boolean isDebug;
 
 	/**
 	 * 有唯一约束的字段名称
@@ -121,10 +122,10 @@ public class PrdProductCtrl {
 	/**
 	 * 查询产品
 	 *
-	 * @mbg.generated 自动生成，如需修改，请删除本行
+	 * @mbg.overrideByMethodName
 	 */
 	@GetMapping("/prd/product")
-	PageInfo<PrdProductMo> list(PrdProductMo mo, @RequestParam(value = "pageNum", required = false) Integer pageNum,
+	PageInfo<PrdProductListRo> list(PrdProductMo mo, @RequestParam(value = "pageNum", required = false) Integer pageNum,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize) {
 		if (pageNum == null)
 			pageNum = 1;
@@ -136,7 +137,7 @@ public class PrdProductCtrl {
 			_log.error(msg);
 			throw new IllegalArgumentException(msg);
 		}
-		PageInfo<PrdProductMo> result = svc.list(mo, pageNum, pageSize);
+		PageInfo<PrdProductListRo> result = svc.pageList(mo, pageNum, pageSize, "CREATE_TIME DESC");
 		_log.info("result: " + result);
 		return result;
 	}
@@ -157,24 +158,24 @@ public class PrdProductCtrl {
 	 * 
 	 * @param to
 	 * @return
-	 * @throws ParseException 
-	 * @throws NumberFormatException 
+	 * @throws ParseException
+	 * @throws NumberFormatException
 	 */
 	@PostMapping("/prd/product")
 	Ro addProduct(@RequestBody AddProductTo to, HttpServletRequest req) throws NumberFormatException, ParseException {
 		_log.info("添加产品信息的请求参数为：{}", to);
 		// 获取当前登录用户id
-        Long currentUserId = 520469568947224576L;
-        if (!isDebug) {
-            currentUserId = JwtUtils.getJwtUserIdInCookie(req);
-        }
-        final Ro ro = new Ro();
-        if (currentUserId == null) {
-            ro.setResult(ResultDic.FAIL);
-            ro.setMsg("您未登录，请登录后再试。。。");
-            return ro;
-        }
-        to.setOpId(currentUserId);
+		Long currentUserId = 520469568947224576L;
+		if (!isDebug) {
+			currentUserId = JwtUtils.getJwtUserIdInCookie(req);
+		}
+		final Ro ro = new Ro();
+		if (currentUserId == null) {
+			ro.setResult(ResultDic.FAIL);
+			ro.setMsg("您未登录，请登录后再试。。。");
+			return ro;
+		}
+		to.setOpId(currentUserId);
 		try {
 			return svc.addProduct(to);
 		} catch (Exception e) {

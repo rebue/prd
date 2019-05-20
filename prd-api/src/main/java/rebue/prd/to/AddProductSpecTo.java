@@ -1,38 +1,25 @@
 package rebue.prd.to;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import rebue.prd.mo.PrdProductSpecMo;
 
-@Data
+@Getter
+@Setter
+@ToString
 @JsonInclude(Include.NON_NULL)
-public class AddProductSpecTo {
+public class AddProductSpecTo extends PrdProductSpecMo {
 
 	/**
-	 * 产品规格名称
+	 * 
 	 */
-	private String productSpecName;
-
-	/**
-	 * 产品规格单位
-	 */
-	private String unit;
-
-	/**
-	 * 市场价格
-	 */
-	private BigDecimal marketPrice;
-
-	/**
-	 * 产品规格图片路径
-	 */
-	private String productSpecPicPath;
-
+	private static final long serialVersionUID = -4181669087676987210L;
 	/**
 	 * 产品规格编码
 	 */
-	private String productSpecCode;
+	private String code;
 }

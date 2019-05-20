@@ -17,8 +17,8 @@ import rebue.prd.dao.PrdProductCategoryDao;
 import rebue.prd.jo.PrdProductCategoryJo;
 import rebue.prd.mapper.PrdProductCategoryMapper;
 import rebue.prd.mo.PrdProductCategoryMo;
+import rebue.prd.ro.PrdProductCategoryTreeRo;
 import rebue.prd.svc.PrdProductCategorySvc;
-import rebue.prd.to.PrdProductCategoryTreeRo;
 import rebue.robotech.svc.impl.BaseSvcImpl;
 
 /**

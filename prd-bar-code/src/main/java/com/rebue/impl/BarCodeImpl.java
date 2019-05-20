@@ -76,7 +76,7 @@ public class BarCodeImpl {
 			// 分类名称
 			String className = result.getString(3);
 			// 分类编码
-			String code = classCode + StrUtils.padLeft(String.valueOf(i++), 2, '0');
+			String code = classCode + StrUtils.padLeft(String.valueOf(i++), 3, '0');
 			// 子分类
 			List<Map<String, Object>> categoryTree = categoryTree(msSqlConn, classId, code);
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -96,42 +96,58 @@ public class BarCodeImpl {
 			if (addClassResult != 1) {
 				break;
 			}
-
-			// 根据分类id查询商品信息
-			String selectGoodsSql = "SELECT * FROM prd.vbl_goods where classId='" + classId
-					+ "' and goodsName not like '%测试%'";
-			PreparedStatement goodsStatement = msSqlConn.prepareStatement(selectGoodsSql);
-			ResultSet goodsResults = goodsStatement.executeQuery();
-			while (goodsResults.next()) {
-				// 商品id
-				String goodsId = goodsResults.getString(1);
-				// 商品名称
-				String goodsName = goodsResults.getString(6);
-				// 该商品名称包含了品牌和商品标题
-				String[] goods = goodsName.split("】");
-				// 品牌名称
-				String brandName = goods[0].substring(1, goods[0].length());
-				// 新商品id
-				Long newGoodsId = idWorker.getId();
-				String addGoodsSql = "INSERT INTO prd.PRD_PRODUCT(ID,CATEGORY_ID,PRODUCT_NAME,IS_ENABLED,MANUFACTURER,BRAND,PRODUCT_DETAIL_PATH,OP_ID,CREATE_TIME)VALUES("
-						+ newGoodsId + ", " + newClassId + ", '" + goodsName + "',true,null,'" + brandName
-						+ "',null,193201,'2019-05-13 16:30:25')";
-				PreparedStatement addGoodsStatement = msSqlConn.prepareStatement(addGoodsSql);
-				int addGoodsResult = addGoodsStatement.executeUpdate();
-				if (addGoodsResult != 1) {
-					break;
-				}
-
-				// 根据商品id查询规格信息
-				String selectSkuSql = "SELECT * FROM prd.vbl_goods_sku where goodsId=" + goodsId;
-				PreparedStatement skuStatement = msSqlConn.prepareStatement(selectSkuSql);
-				ResultSet skuResults = skuStatement.executeQuery();
-				while (skuResults.next()) {
-					
-				}
-			}
 		}
 		return list;
 	}
 
+	@Test
+	public void test03() throws SQLException {
+		// 连接数据库
+		Connection msSqlConn = DbUtils.getMsSqlConn();
+		// 查询顶级分类
+		String sql = "SELECT * FROM prd.PRD_PRODUCT_CATEGORY where code like '___'";
+		PreparedStatement prepareStatement = msSqlConn.prepareStatement(sql);
+		ResultSet result = prepareStatement.executeQuery();
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		while (result.next()) {
+			String code = result.getString(3);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id", result.getString(1));
+			map.put("name", result.getString(2));
+			map.put("code", code);
+			map.put("isEnabled", result.getString(4));
+			map.put("opId", result.getString(5));
+			map.put("createTime", result.getString(6));
+			List<Map<String, Object>> classTree = classTree(code);
+			if (classTree.size() != 0) {
+				map.put("list", classTree);
+			}
+			list.add(map);
+			System.out.println(String.valueOf(list));
+		}
+	}
+
+	public List<Map<String, Object>> classTree(String code) throws SQLException {
+		Connection msSqlConn = DbUtils.getMsSqlConn();
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		String sql = "SELECT * FROM prd.PRD_PRODUCT_CATEGORY where code like '" + code + "___'";
+		PreparedStatement prepareStatement = msSqlConn.prepareStatement(sql);
+		ResultSet result = prepareStatement.executeQuery();
+		while (result.next()) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id", result.getString(1));
+			map.put("name", result.getString(2));
+			map.put("code", result.getString(3));
+			map.put("isEnabled", result.getString(4));
+			map.put("opId", result.getString(5));
+			map.put("createTime", result.getString(6));
+			List<Map<String, Object>> classTree = classTree(result.getString(3));
+			if (classTree.size() != 0) {
+				map.put("list", classTree);
+			}
+			list.add(map);
+			System.out.println(list.toString());
+		}
+		return list;
+	}
 }

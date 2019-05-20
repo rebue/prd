@@ -2,7 +2,9 @@ package rebue.prd.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -14,6 +16,7 @@ import rebue.robotech.ro.IdRo;
 import rebue.robotech.ro.Ro;
 import rebue.wheel.OkhttpUtils;
 import rebue.wheel.RandomEx;
+import rebue.wheel.StrUtils;
 
 /**
  * 产品
@@ -76,11 +79,15 @@ public class PrdProductTests {
 
 	@Test
 	public void saveFileTest() throws IOException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("content", "<p>士大夫撒旦法师从vv</p><p></p><p></p><p></p><p></p>");
-		map.put("fileName", "560761261214793728");
-		map.put("fileType", "html");
-		String str = OkhttpUtils.postByJsonParams("http://192.168.1.222:20180/ise/save", map);
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("content", "<p>士大夫撒旦法师从vv</p><p></p><p></p><p></p><p></p>");
+//		map.put("fileName", "560761261214793728");
+//		map.put("fileType", "html");
+//		String str = OkhttpUtils.postByJsonParams("http://192.168.1.222:20180/ise/save", map);
+//		System.out.println(str);
+
+		String str = OkhttpUtils.get(
+				"http://127.0.0.1:20180/ise/read?filePath=goodsDetail/2019/05/20/09/27/3A7BC247A90F4E16B5B12F6A7F175D90.html");
 		System.out.println(str);
 	}
 }

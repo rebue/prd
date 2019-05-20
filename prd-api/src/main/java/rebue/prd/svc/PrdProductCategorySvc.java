@@ -4,7 +4,7 @@ import java.util.List;
 
 import rebue.prd.jo.PrdProductCategoryJo;
 import rebue.prd.mo.PrdProductCategoryMo;
-import rebue.prd.to.PrdProductCategoryTreeRo;
+import rebue.prd.ro.PrdProductCategoryTreeRo;
 import rebue.robotech.svc.BaseSvc;
 
 /**
