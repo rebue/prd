@@ -1,21 +1,20 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2019/5/13 15:21:23                           */
+/* Created on:     2019/5/20 14:52:30                           */
 /*==============================================================*/
 
-
-drop table if exists PRD_PRODUCT_PIC;
-
-drop table if exists PRD_PRODUCT_SPEC_ATTR;
-
-drop table if exists PRD_PRODUCT_SPEC_CODE;
-
-drop table if exists PRD_PRODUCT_SPEC;
 
 drop table if exists PRD_PRODUCT;
 
 drop table if exists PRD_PRODUCT_CATEGORY;
 
+drop table if exists PRD_PRODUCT_PIC;
+
+drop table if exists PRD_PRODUCT_SPEC;
+
+drop table if exists PRD_PRODUCT_SPEC_ATTR;
+
+drop table if exists PRD_PRODUCT_SPEC_CODE;
 
 /*==============================================================*/
 /* Table: PRD_PRODUCT                                           */
@@ -48,6 +47,7 @@ create table PRD_PRODUCT_CATEGORY
    IS_ENABLED           bool not null default true comment '是否启用',
    OP_ID                bigint not null comment '操作人ID',
    CREATE_TIME          datetime not null comment '创建时间',
+   FULL_NAME            varchar(100) not null comment '以-隔开',
    primary key (ID),
    unique key AK_CODE (CODE)
 );
