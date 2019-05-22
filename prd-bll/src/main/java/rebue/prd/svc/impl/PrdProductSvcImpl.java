@@ -22,8 +22,8 @@ import rebue.ise.to.SaveFileTo;
 import rebue.prd.dao.PrdProductDao;
 import rebue.prd.jo.PrdProductJo;
 import rebue.prd.mapper.PrdProductMapper;
+import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.prd.mo.PrdProductMo;
-import rebue.prd.mo.PrdProductPicMo;
 import rebue.prd.mo.PrdProductSpecCodeMo;
 import rebue.prd.mo.PrdProductSpecMo;
 import rebue.prd.ro.PrdProductListRo;
@@ -34,6 +34,8 @@ import rebue.prd.svc.PrdProductSpecSvc;
 import rebue.prd.svc.PrdProductSvc;
 import rebue.prd.to.AddProductSpecTo;
 import rebue.prd.to.AddProductTo;
+import rebue.prd.to.ModifyProductSpecTo;
+import rebue.prd.to.ModifyProductTo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.Ro;
 import rebue.robotech.svc.impl.BaseSvcImpl;
@@ -119,6 +121,7 @@ public class PrdProductSvcImpl
 
 		SaveFileTo saveFileTo = new SaveFileTo();
 		saveFileTo.setContent(to.getProductDetail());
+		saveFileTo.setModuleName("productDetail");
 		saveFileTo.setFileType("html");
 		_log.info("添加产品信息保存产品详情文件的参数为：{}", saveFileTo);
 		SaveFileRo saveFileRo = iseSvc.saveFile(saveFileTo);
@@ -177,22 +180,137 @@ public class PrdProductSvcImpl
 			}
 		}
 
-		for (PrdProductPicMo picMo : to.getPics()) {
-			PrdProductPicMo productPicMo = dozerMapper.map(picMo, PrdProductPicMo.class);
-			productPicMo.setId(_idWorker.getId());
-			productPicMo.setProductId(productId);
-			_log.info("添加产品信息添加产品图片信息的参数为：{}", productPicMo);
-			int addProductPicResult = prdProductPicSvc.add(productPicMo);
-			_log.info("添加产品信息添加产品图片信息的返回值为：{}", addProductPicResult);
-			if (addProductPicResult != 1) {
-				_log.error("添加产品信息添加产品图片出现错误，请求的参数为：{}", productPicMo);
-				throw new RuntimeException("添加图片出现异常");
-			}
+		_log.info("添加产品信息批量添加产品图片的参数为：list-{}, productId-{}", to.getPics(), productId);
+		Ro batchAddPicByProductIdRo = prdProductPicSvc.batchAddPicByProductId(to.getPics(), productId);
+		_log.info("添加产品信息批量添加产品图片的返回值为：{}", batchAddPicByProductIdRo);
+		if (batchAddPicByProductIdRo.getResult() != ResultDic.SUCCESS) {
+			_log.info("添加产品信息批量添加产品图片出现异常，请求的参数为：{}", to);
+			throw new RuntimeException("添加产品图片失败");
 		}
 
 		_log.info("添加产品信息成功，请求的参数为：{}", to);
 		ro.setResult(ResultDic.SUCCESS);
 		ro.setMsg("添加成功");
+		return ro;
+	}
+
+	/**
+	 * 修改产品信息
+	 * 
+	 * @param to
+	 * @return
+	 */
+	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public Ro modifyProduct(ModifyProductTo to) {
+		_log.info("修改产品信息的请求参数为：{}", to);
+		Ro ro = new Ro();
+		if (to.getId() == null || to.getProductName() == null || to.getCategoryId() == null || to.getOpId() == null) {
+			_log.error("修改产品信息时发现产品有误，请求的参数为：{}", to);
+			ro.setResult(ResultDic.PARAM_ERROR);
+			ro.setMsg("参数错误");
+			return ro;
+		}
+
+		SaveFileTo saveFileTo = new SaveFileTo();
+		saveFileTo.setContent(to.getProductDetail());
+		saveFileTo.setFileType("html");
+		saveFileTo.setModuleName("productDetail");
+		saveFileTo.setOldFilePath(to.getProductDetailPath());
+		_log.info("修改产品信息保存文件的参数为：{}", saveFileTo);
+		SaveFileRo saveFileRo = iseSvc.saveFile(saveFileTo);
+		_log.info("修改产品信息保存文件的返回值为：{}", saveFileRo);
+		if (saveFileRo == null) {
+			_log.error("修改产品信息保存文件时出现异常，请求的参数为：{}", to);
+			ro.setResult(ResultDic.FAIL);
+			ro.setMsg("保存产品详情出现异常");
+			return ro;
+		}
+
+		PrdProductMo productMo = new PrdProductMo();
+		productMo.setId(to.getId());
+		productMo.setCategoryId(to.getCategoryId());
+		productMo.setProductName(to.getProductName());
+		productMo.setIsEnabled(to.getIsEnabled());
+		productMo.setManufacturer(to.getManufacturer());
+		productMo.setBrand(to.getBrand());
+		productMo.setProductDetailPath(saveFileRo.getFilePath());
+		productMo.setOpId(to.getOpId());
+		productMo.setCreateTime(new Date());
+		_log.info("修改产品信息的参数为：{}", productMo);
+		int modifyProductResult = thisSvc.modify(productMo);
+		_log.info("修改产品信息的返回值为：{}", modifyProductResult);
+		if (modifyProductResult != 1) {
+			_log.error("修改产品信息时出现错误，请求的参数为：{}", productMo);
+			throw new RuntimeException("修改产品信息出错");
+		}
+
+		for (ModifyProductSpecTo modifyProductSpecTo : to.getSpec()) {
+			PrdProductSpecMo prdProductSpecMo = dozerMapper.map(modifyProductSpecTo, PrdProductSpecMo.class);
+			if (modifyProductSpecTo.getId().toString().length() > 13) {
+				_log.info("修改产品信息修改产品规格信息的参数为：{}", prdProductSpecMo);
+				int modifyProductSpecResult = prdProductSpecSvc.modify(prdProductSpecMo);
+				_log.info("修改产品信息修改产品规格信息的返回值为：{}", modifyProductSpecResult);
+				if (modifyProductSpecResult < 0) {
+					_log.error("修改产品信息修改产品规格信息出现异常，请求的参数为：{}", prdProductSpecMo);
+					throw new RuntimeException("修改产品规格出现异常");
+				}
+
+				PrdProductSpecCodeMo productSpecCodeMo = new PrdProductSpecCodeMo();
+				productSpecCodeMo.setId(modifyProductSpecTo.getProductSpecCodeId());
+				productSpecCodeMo.setCode(modifyProductSpecTo.getCode());
+				_log.info("修改产品信息修改产品规格编码信息的参数为：{}", productSpecCodeMo);
+				int modifyProductSpecCodeResult = prdProductSpecCodeSvc.modify(productSpecCodeMo);
+				_log.info("修改产品信息修改产品规格编码信息的参数为：{}", modifyProductSpecCodeResult);
+				if (modifyProductSpecCodeResult < 0) {
+					_log.error("修改产品信息修改产品规格编码出现异常，请求的参数为：{}", productSpecCodeMo);
+					throw new RuntimeException("修改规格编码出现异常");
+				}
+			} else {
+				// 产品规格ID
+				Long productSpecId = _idWorker.getId();
+				prdProductSpecMo.setId(productSpecId);
+				prdProductSpecMo.setProductId(to.getId());
+				_log.info("修改产品信息添加产品规格信息的参数为：{}", prdProductSpecMo);
+				int addProductSpecResult = prdProductSpecSvc.add(prdProductSpecMo);
+				_log.info("修改产品信息添加产品规格信息的返回值为：{}", addProductSpecResult);
+				if (addProductSpecResult != 1) {
+					_log.error("修改产品信息添加产品规格信息出现错误，请求的参数为：{}", prdProductSpecMo);
+					throw new RuntimeException("修改规格信息出现异常");
+				}
+
+				PrdProductSpecCodeMo productSpecCodeMo = new PrdProductSpecCodeMo();
+				productSpecCodeMo.setId(_idWorker.getId());
+				productSpecCodeMo.setProductSpecId(productSpecId);
+				productSpecCodeMo.setCode(modifyProductSpecTo.getCode());
+				_log.info("修改产品信息添加产品规格编码信息的参数为：{}", productSpecCodeMo);
+				int addProductSpecCodeResult = prdProductSpecCodeSvc.add(productSpecCodeMo);
+				_log.info("修改产品信息添加产品规格编码信息的返回值为：{}", addProductSpecCodeResult);
+				if (addProductSpecCodeResult != 1) {
+					_log.error("修改产品信息添加产品规格编码出现错误，请求的参数为：{}", productSpecCodeMo);
+					throw new RuntimeException("添加规格编码出现异常");
+				}
+			}
+		}
+
+		Ro delByProductIdResult = prdProductPicSvc.delByProductId(to.getId());
+		_log.info("修改产品信息删除产品图片的返回值为：{}", delByProductIdResult);
+		if (delByProductIdResult.getResult() != ResultDic.SUCCESS) {
+			_log.error("修改产品信息删除产品图片出现异常，请求的参数为：{}", to.getId());
+			throw new RuntimeException("删除产品图片失败");
+		}
+
+		_log.info("修改产品信息批量添加产品图片的参数为：list-{}, productId-{}", to.getPics(), to.getId());
+		Ro batchAddPicByProductIdRo = prdProductPicSvc.batchAddPicByProductId(to.getPics(), to.getId());
+		_log.info("修改产品信息批量添加产品图片的返回值为：{}", batchAddPicByProductIdRo);
+		if (batchAddPicByProductIdRo.getResult() != ResultDic.SUCCESS) {
+			_log.info("修改产品信息批量添加产品图片出现异常，请求的参数为：{}", to);
+			throw new RuntimeException("添加产品图片失败");
+		}
+
+		_log.info("修改产品信息成功，请求的参数为：{}", to);
+		ro.setResult(ResultDic.SUCCESS);
+		ro.setMsg("修改成功");
 		return ro;
 	}
 
@@ -219,6 +337,11 @@ public class PrdProductSvcImpl
 			String readFileResult = iseSvc.readFileByByte(prdProductMo.getProductDetailPath());
 			_log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
 			productListRo.setProductDetail(readFileResult);
+
+			PrdProductCategoryMo productCategoryMo = prdProductCategorySvc.getById(prdProductMo.getCategoryId());
+			if (productCategoryMo != null) {
+				productListRo.setFullName(productCategoryMo.getFullName());
+			}
 			list.add(productListRo);
 		}
 		pageInfo = dozerMapper.map(selectPageInfo, PageInfo.class);
@@ -226,4 +349,37 @@ public class PrdProductSvcImpl
 		return pageInfo;
 	}
 
+	/**
+	 * 禁用或启用产品
+	 * 
+	 * @param id        产品ID
+	 * @param isEnabled
+	 * @return
+	 */
+	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public Ro enable(Long id, Boolean isEnabled) {
+		_log.info("禁用或启用产品的请求参数为：id-{}, isEnabled-{}", id, isEnabled);
+		Ro ro = new Ro();
+		if (id == null || isEnabled == null) {
+			_log.error("禁用或启用产品时发现参数不正确，请求的参数为：id-{}, isEnabled-{}", id, isEnabled);
+			ro.setResult(ResultDic.PARAM_ERROR);
+			ro.setMsg("参数不正确");
+			return ro;
+		}
+
+		int enableResult = _mapper.enable(id, isEnabled);
+		_log.info("禁用或启用产品的返回值为：{}", enableResult);
+		if (enableResult != 1) {
+			_log.error("禁用或启用产品出现错误，请求的参数为：id-{}, isEnabled-{}", id, isEnabled);
+			ro.setResult(ResultDic.FAIL);
+			ro.setMsg("操作失败");
+			return ro;
+		}
+
+		_log.error("禁用或启用产品成功，请求的参数为：id-{}, isEnabled-{}", id, isEnabled);
+		ro.setResult(ResultDic.SUCCESS);
+		ro.setMsg("操作成功");
+		return ro;
+	}
 }

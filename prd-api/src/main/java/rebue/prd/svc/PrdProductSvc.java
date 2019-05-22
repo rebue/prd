@@ -6,6 +6,7 @@ import rebue.prd.jo.PrdProductJo;
 import rebue.prd.mo.PrdProductMo;
 import rebue.prd.ro.PrdProductListRo;
 import rebue.prd.to.AddProductTo;
+import rebue.prd.to.ModifyProductTo;
 import rebue.robotech.ro.Ro;
 import rebue.robotech.svc.BaseSvc;
 
@@ -25,6 +26,14 @@ public interface PrdProductSvc extends BaseSvc<java.lang.Long, PrdProductMo, Prd
 	Ro addProduct(AddProductTo to);
 
 	/**
+	 * 修改产品信息
+	 * 
+	 * @param to
+	 * @return
+	 */
+	Ro modifyProduct(ModifyProductTo to);
+
+	/**
 	 * 查询产品分页信息
 	 * 
 	 * @param mo
@@ -34,4 +43,14 @@ public interface PrdProductSvc extends BaseSvc<java.lang.Long, PrdProductMo, Prd
 	 * @return
 	 */
 	PageInfo<PrdProductListRo> pageList(PrdProductMo mo, Integer pageNum, int pageSize, String orderBy);
+
+	/**
+	 * 禁用或启用产品
+	 * 
+	 * @param id        产品ID
+	 * @param isEnabled
+	 * @return
+	 */
+	Ro enable(Long id, Boolean isEnabled);
+
 }

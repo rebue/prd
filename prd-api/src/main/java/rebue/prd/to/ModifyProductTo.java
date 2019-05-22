@@ -10,10 +10,15 @@ import rebue.prd.mo.PrdProductPicMo;
 
 @Data
 @JsonInclude(Include.NON_NULL)
-public class AddProductTo {
+public class ModifyProductTo {
 
 	/**
-	 * 产品分类ID
+	 * 产品id
+	 */
+	private Long id;
+
+	/**
+	 * 产品分类id
 	 */
 	private Long categoryId;
 
@@ -21,6 +26,11 @@ public class AddProductTo {
 	 * 产品名称
 	 */
 	private String productName;
+	
+	/**
+	 * 是否启用
+	 */
+	private Boolean isEnabled;
 
 	/**
 	 * 生产厂家
@@ -38,6 +48,11 @@ public class AddProductTo {
 	private String productDetail;
 	
 	/**
+	 * 产品详情路径
+	 */
+	private String productDetailPath;
+	
+	/**
 	 * 操作人ID
 	 */
 	private Long opId;
@@ -45,7 +60,7 @@ public class AddProductTo {
 	/**
 	 * 产品规格信息
 	 */
-	private List<AddProductSpecTo> spec;
+	private List<ModifyProductSpecTo> spec;
 
 	/**
 	 * 产品图片

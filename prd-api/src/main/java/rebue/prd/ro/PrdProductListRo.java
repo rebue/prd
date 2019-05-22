@@ -22,7 +22,7 @@ public class PrdProductListRo extends PrdProductMo {
 	/**
 	 * 产品分类
 	 */
-	private String productCategory;
+	private String fullName;
 
 	/**
 	 * 操作人

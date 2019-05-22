@@ -23,6 +23,7 @@ import rebue.prd.mo.PrdProductMo;
 import rebue.prd.ro.PrdProductListRo;
 import rebue.prd.svc.PrdProductSvc;
 import rebue.prd.to.AddProductTo;
+import rebue.prd.to.ModifyProductTo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.Ro;
 import rebue.wheel.turing.JwtUtils;
@@ -59,35 +60,34 @@ public class PrdProductCtrl {
 	/**
 	 * 修改产品
 	 *
-	 * @mbg.generated 自动生成，如需修改，请删除本行
+	 * @mbg.overrideByMethodName
 	 */
 	@PutMapping("/prd/product")
-	Ro modify(@RequestBody PrdProductMo mo) throws Exception {
-		_log.info("modify PrdProductMo: {}", mo);
+	Ro modify(@RequestBody ModifyProductTo to, HttpServletRequest req) throws Exception {
+		_log.info("modify ModifyProductTo: {}", to);
 		Ro ro = new Ro();
+		// 获取当前登录用户id
+		Long currentUserId = 520469568947224576L;
+		if (!isDebug) {
+			currentUserId = JwtUtils.getJwtUserIdInCookie(req);
+		}
+		if (currentUserId == null) {
+			ro.setResult(ResultDic.FAIL);
+			ro.setMsg("您未登录，请登录后再试。。。");
+			return ro;
+		}
+		to.setOpId(currentUserId);
 		try {
-			if (svc.modify(mo) == 1) {
-				String msg = "修改成功";
-				_log.info("{}: mo-{}", msg, mo);
-				ro.setMsg(msg);
-				ro.setResult(ResultDic.SUCCESS);
-				return ro;
-			} else {
-				String msg = "修改失败";
-				_log.error("{}: mo-{}", msg, mo);
-				ro.setMsg(msg);
-				ro.setResult(ResultDic.FAIL);
-				return ro;
-			}
+			return svc.modifyProduct(to);
 		} catch (DuplicateKeyException e) {
 			String msg = "修改失败，" + _uniqueFilesName + "已存在，不允许出现重复";
-			_log.error(msg + ": mo=" + mo, e);
+			_log.error(msg + ": mo=" + to, e);
 			ro.setMsg(msg);
 			ro.setResult(ResultDic.FAIL);
 			return ro;
 		} catch (RuntimeException e) {
 			String msg = "修改失败，出现运行时异常";
-			_log.error(msg + ": mo-" + mo, e);
+			_log.error(msg + ": mo-" + to, e);
 			ro.setMsg(msg);
 			ro.setResult(ResultDic.FAIL);
 			return ro;
@@ -184,5 +184,18 @@ public class PrdProductCtrl {
 			ro.setMsg(e.getMessage());
 			return ro;
 		}
+	}
+
+	/**
+	 * 禁用或启用产品
+	 * 
+	 * @param id        产品ID
+	 * @param isEnabled
+	 * @return
+	 */
+	@PutMapping("/prd/product/enable")
+	Ro enable(@RequestParam("id") Long id, @RequestParam("isEnabled") Boolean isEnabled) {
+		_log.info("禁用或启用产品的请求参数为：id-{}, idEnabled-{}", id, isEnabled);
+		return svc.enable(id, isEnabled);
 	}
 }

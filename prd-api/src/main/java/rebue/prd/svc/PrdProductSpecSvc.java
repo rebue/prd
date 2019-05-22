@@ -4,7 +4,7 @@ import java.util.List;
 
 import rebue.prd.jo.PrdProductSpecJo;
 import rebue.prd.mo.PrdProductSpecMo;
-import rebue.prd.to.AddProductSpecTo;
+import rebue.prd.to.ModifyProductSpecTo;
 import rebue.robotech.svc.BaseSvc;
 
 /**
@@ -19,5 +19,5 @@ public interface PrdProductSpecSvc extends BaseSvc<java.lang.Long, PrdProductSpe
 	 * @param mo
 	 * @return
 	 */
-	List<AddProductSpecTo> listEx(PrdProductSpecMo mo);
+	List<ModifyProductSpecTo> listEx(PrdProductSpecMo mo);
 }

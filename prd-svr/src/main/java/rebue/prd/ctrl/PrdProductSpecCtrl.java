@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rebue.prd.mo.PrdProductSpecMo;
 import rebue.prd.svc.PrdProductSpecSvc;
-import rebue.prd.to.AddProductSpecTo;
+import rebue.prd.to.ModifyProductSpecTo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.IdRo;
 import rebue.robotech.ro.Ro;
@@ -155,7 +155,7 @@ public class PrdProductSpecCtrl {
 	 * @mbg.overrideByMethodName
 	 */
 	@GetMapping("/prd/productspec")
-	List<AddProductSpecTo> list(PrdProductSpecMo mo) {
+	List<ModifyProductSpecTo> list(PrdProductSpecMo mo) {
 		_log.info("list PrdProductSpecMo:" + mo);
 		return svc.listEx(mo);
 	}

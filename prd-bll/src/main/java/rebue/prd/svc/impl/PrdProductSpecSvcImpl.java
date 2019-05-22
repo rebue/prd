@@ -19,7 +19,7 @@ import rebue.prd.mo.PrdProductSpecCodeMo;
 import rebue.prd.mo.PrdProductSpecMo;
 import rebue.prd.svc.PrdProductSpecCodeSvc;
 import rebue.prd.svc.PrdProductSpecSvc;
-import rebue.prd.to.AddProductSpecTo;
+import rebue.prd.to.ModifyProductSpecTo;
 import rebue.robotech.svc.impl.BaseSvcImpl;
 
 /**
@@ -73,16 +73,17 @@ public class PrdProductSpecSvcImpl
 	 * @return
 	 */
 	@Override
-	public List<AddProductSpecTo> listEx(PrdProductSpecMo mo) {
+	public List<ModifyProductSpecTo> listEx(PrdProductSpecMo mo) {
 		_log.info("listEx PrdProductSpecMo：{}", mo);
-		List<AddProductSpecTo> list = new ArrayList<AddProductSpecTo>();
+		List<ModifyProductSpecTo> list = new ArrayList<ModifyProductSpecTo>();
 		List<PrdProductSpecMo> productSpecList = thisSvc.list(mo);
 		for (PrdProductSpecMo prdProductSpecMo : productSpecList) {
-			AddProductSpecTo productSpecTo = dozerMapper.map(prdProductSpecMo, AddProductSpecTo.class);
+			ModifyProductSpecTo productSpecTo = dozerMapper.map(prdProductSpecMo, ModifyProductSpecTo.class);
 			PrdProductSpecCodeMo productSpecCodeMo = new PrdProductSpecCodeMo();
 			productSpecCodeMo.setProductSpecId(prdProductSpecMo.getId());
 			PrdProductSpecCodeMo prdProductSpecCodeMo = prdProductSpecCodeSvc.getOne(productSpecCodeMo);
 			if (prdProductSpecCodeMo != null) {
+				productSpecTo.setProductSpecCodeId(prdProductSpecCodeMo.getId());
 				productSpecTo.setCode(prdProductSpecCodeMo.getCode());
 			}
 			list.add(productSpecTo);
