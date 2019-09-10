@@ -32,6 +32,11 @@
 				<artifactId>ise-svr-feign</artifactId>
 				<version>1.0.8</version>
 			</dependency>
+			<dependency>
+				<groupId>com.github.rebue.onl</groupId>
+				<artifactId>onl-svr-feign</artifactId>
+				<version>1.0.9</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<modules>
