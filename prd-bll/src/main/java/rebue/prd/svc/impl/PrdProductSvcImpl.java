@@ -454,6 +454,7 @@ public class PrdProductSvcImpl
             addProductSpecMo.setProductId(addProductMo.getId());
             addProductSpecMo.setMarketPrice(item.getPrice()); // 市场价格就是售价
             addProductSpecMo.setName("暂无规格名称");
+            addProductSpecMo.setUnit(item.getUnit());
             if (prdProductSpecSvc.add(addProductSpecMo) != 1) {
                 throw new RuntimeException("添加一个新产品规格失败");
             }
@@ -494,6 +495,7 @@ public class PrdProductSvcImpl
             addOnlineSpecMo.setCurrentOnlineCount(item.getStock());
             addOnlineSpecMo.setOnlineSpec(item.getName());
             addOnlineSpecMo.setSeqNo(0);
+            addOnlineSpecMo.setSaleUnit(item.getUnit());
             if (onlOnlineSpecSvc.add(addOnlineSpecMo).getResult().getCode() != 1) {
                 throw new RuntimeException("添加上线规格信息失败");
             }
