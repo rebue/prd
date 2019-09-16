@@ -110,7 +110,7 @@ public class PrdProductSpecCodeSvcImpl extends
                 result.setProductDetailList(productDetailList);
             }
 
-        } else {
+        } else if (codeResult.size() > 1) {
             List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
             List<ProductDetailRo> productDetailList = new ArrayList<ProductDetailRo>();
 
@@ -145,6 +145,10 @@ public class PrdProductSpecCodeSvcImpl extends
             result.setMsg("找到产品规格或者上线信息");
             result.setBarcode(barcode);
             result.setResult((byte) 1);
+        } else {
+            result.setMsg("没有找到商品");
+            result.setResult((byte) -1);
+            result.setBarcode(barcode);
         }
         _log.info("即将返回的结果:-{}", result);
         return result;
