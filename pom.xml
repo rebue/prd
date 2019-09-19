@@ -45,5 +45,6 @@
 		<module>prd-bll</module>
 		<module>prd-svr</module>
 		<module>prd-bar-code</module>
+		<module>prd-svr-feign</module>
 	</modules>
 </project>
