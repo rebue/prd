@@ -27,6 +27,11 @@ spring:
     url: jdbc:mysql://192.168.1.201:3306/prd?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
     username: prd
     password: prd
+  main:
+    allow-bean-definition-overriding: true
 
+#配置ElasticSearch地址  
+elasticsearch: 
+  host: 192.168.1.202:9200
 
 appid: 1

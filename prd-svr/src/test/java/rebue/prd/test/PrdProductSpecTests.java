@@ -1,9 +1,13 @@
 package rebue.prd.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.math.BigDecimal;
+
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import rebue.prd.mo.PrdProductSpecMo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.IdRo;
@@ -18,7 +22,7 @@ import rebue.wheel.RandomEx;
  */
 public class PrdProductSpecTests {
 
-    private final String hostUrl = "http://127.0.0.1:9009";
+    private final String hostUrl = "http://127.0.0.1:20195";
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
@@ -26,11 +30,11 @@ public class PrdProductSpecTests {
     private final ObjectMapper _objectMapper = new ObjectMapper();
 
     /**
-     *  测试基本的增删改查
+     * 测试基本的增删改查
      *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
+     * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @Test
+//    @Test
     public void testCrud() throws IOException, ReflectiveOperationException {
         PrdProductSpecMo mo = null;
         for (int i = 0; i < 20; i++) {
@@ -61,5 +65,52 @@ public class PrdProductSpecTests {
         final Ro deleteRo = _objectMapper.readValue(deleteResult, Ro.class);
         System.out.println(deleteRo);
         Assert.assertEquals(ResultDic.SUCCESS, deleteRo.getResult());
+    }
+
+//    @Test
+    public void test01() throws IOException {
+        PrdProductSpecMo mo = new PrdProductSpecMo();
+        mo.setId(105L);
+        mo.setName("可口可乐");
+        mo.setMarketPrice(BigDecimal.valueOf(2.5));
+        mo.setPicPath("ttes/test");
+        mo.setProductId(369L);
+        mo.setUnit("洗");
+        System.out.println("添加产品规格的参数为：" + mo);
+
+        final String addResult = OkhttpUtils.postByJsonParams(hostUrl + "/prd/productspec", mo);
+        System.out.println("添加产品规格的返回值为：" + addResult);
+
+    }
+
+//    @Test
+    public void test02() throws IOException {
+        final String addResult = OkhttpUtils.get(hostUrl + "/prd/prdproductspecso/get-by-id?id=5");
+        System.out.println("查询产品规格的返回值为：" + addResult);
+    }
+
+    @Test
+    public void test03() throws IOException {
+        final String addResult = OkhttpUtils.get(hostUrl + "/prd/prdproductspecso/select-by-name?name=百事");
+        System.out.println("查询产品规格的返回值为：" + addResult);
+    }
+
+//    @Test
+    public void testModify() throws IOException {
+        PrdProductSpecMo mo = new PrdProductSpecMo();
+        mo.setName("bbbb");
+        mo.setUnit("a");
+        mo.setPicPath("test");
+        mo.setId(6L);
+        mo.setProductId(369L);
+        mo.setMarketPrice(BigDecimal.valueOf(1.6));
+        final String modifyResult = OkhttpUtils.putByJsonParams(hostUrl + "/prd/productspec", mo);
+        System.out.println("修改积分日志类型的返回值为：" + modifyResult);
+    }
+
+//    @Test
+    public void testDelete() throws IOException {
+        final String deleteResult = OkhttpUtils.delete(hostUrl + "/prd/productspec?id=5");
+        System.out.println("删除产品规格的返回值为：" + deleteResult);
     }
 }

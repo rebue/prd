@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.dozermapper.core.Mapper;
+
 import rebue.onl.ro.OnlOnlineSpecInfoRo;
 import rebue.onl.svr.feign.OnlOnlineSpecSvc;
 import rebue.prd.dao.PrdProductSpecCodeDao;
@@ -56,6 +58,9 @@ public class PrdProductSpecCodeSvcImpl extends
     @Resource
     private OnlOnlineSpecSvc onlOnlineSpecSvc;
 
+    @Resource
+    Mapper dozerMapper;
+
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
@@ -67,12 +72,29 @@ public class PrdProductSpecCodeSvcImpl extends
         if (mo.getId() == null || mo.getId() == 0) {
             mo.setId(_idWorker.getId());
         }
-        return super.add(mo);
+        final int rowCount = super.add(mo);
+        return rowCount;
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public int modify(final PrdProductSpecCodeMo mo) {
+        _log.info("svc.modify: mo-{}", mo);
+        final int rowCount = super.modify(mo);
+        return rowCount;
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public int del(final Long id) {
+        _log.info("svc.del: id-{}", id);
+        final int rowCount = super.del(id);
+        return rowCount;
     }
 
     @Override
     public BarcodeRo getGoodsDetailByBarcode(String barcode) {
-        BarcodeRo result = new BarcodeRo();
+        BarcodeRo            result    = new BarcodeRo();
         PrdProductSpecCodeMo getCodeMo = new PrdProductSpecCodeMo();
         getCodeMo.setCode(barcode);
         List<PrdProductSpecCodeMo> codeResult = super.list(getCodeMo);
@@ -86,7 +108,7 @@ public class PrdProductSpecCodeSvcImpl extends
                     .selectOnlineSpecByProductSpecId(specResult.getId());
             if (onlineSpecResult.size() != 0) {
                 List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
-                PrdOnlineDetailRo prdOnlineDetail = new PrdOnlineDetailRo();
+                PrdOnlineDetailRo       prdOnlineDetail  = new PrdOnlineDetailRo();
                 prdOnlineDetail.setId(onlineSpecResult.get(0).getSpecId());
                 prdOnlineDetail.setSalePrice(onlineSpecResult.get(0).getSalePrice());
                 prdOnlineDetail.setSaleUnit(specResult.getUnit());
@@ -98,7 +120,7 @@ public class PrdProductSpecCodeSvcImpl extends
                 result.setOnlineDetailList(onlineDetailList);
             } else {
                 List<ProductDetailRo> productDetailList = new ArrayList<ProductDetailRo>();
-                ProductDetailRo productDetail = new ProductDetailRo();
+                ProductDetailRo       productDetail     = new ProductDetailRo();
                 productDetail.setId(specResult.getId());
                 productDetail.setSalePrice(specResult.getMarketPrice());
                 productDetail.setSaleUnit(specResult.getUnit());
@@ -111,8 +133,8 @@ public class PrdProductSpecCodeSvcImpl extends
             }
 
         } else if (codeResult.size() > 1) {
-            List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
-            List<ProductDetailRo> productDetailList = new ArrayList<ProductDetailRo>();
+            List<PrdOnlineDetailRo> onlineDetailList  = new ArrayList<PrdOnlineDetailRo>();
+            List<ProductDetailRo>   productDetailList = new ArrayList<ProductDetailRo>();
 
             _log.info("找到多条编码详情");
             for (PrdProductSpecCodeMo item : codeResult) {

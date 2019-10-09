@@ -1,14 +1,18 @@
 package rebue.prd.svc.impl;
 
-import com.github.dozermapper.core.Mapper;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.github.dozermapper.core.Mapper;
+
 import rebue.prd.dao.PrdProductCategoryDao;
 import rebue.prd.jo.PrdProductCategoryJo;
 import rebue.prd.mapper.PrdProductCategoryMapper;
@@ -33,12 +37,17 @@ import rebue.robotech.svc.impl.BaseSvcImpl;
  */
 @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 @Service
-public class PrdProductCategorySvcImpl extends BaseSvcImpl<java.lang.Long, PrdProductCategoryJo, PrdProductCategoryDao, PrdProductCategoryMo, PrdProductCategoryMapper> implements PrdProductCategorySvc {
+public class PrdProductCategorySvcImpl extends
+        BaseSvcImpl<java.lang.Long, PrdProductCategoryJo, PrdProductCategoryDao, PrdProductCategoryMo, PrdProductCategoryMapper>
+        implements PrdProductCategorySvc {
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
     private static final Logger _log = LoggerFactory.getLogger(PrdProductCategorySvcImpl.class);
+
+    @Resource
+    private Mapper dozerMapper;
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
@@ -51,19 +60,33 @@ public class PrdProductCategorySvcImpl extends BaseSvcImpl<java.lang.Long, PrdPr
         if (mo.getId() == null || mo.getId() == 0) {
             mo.setId(_idWorker.getId());
         }
-        return super.add(mo);
+        final int rowCount = super.add(mo);
+        return rowCount;
     }
 
-    @Resource
-    private Mapper dozerMapper;
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public int modify(final PrdProductCategoryMo mo) {
+        _log.info("svc.modify: mo-{}", mo);
+        final int rowCount = super.modify(mo);
+        return rowCount;
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public int del(final Long id) {
+        _log.info("svc.del: id-{}", id);
+        final int rowCount = super.del(id);
+        return rowCount;
+    }
 
     @Resource
     private PrdProductCategorySvc thisSvc;
 
     /**
-     *  获取产品分类树
+     * 获取产品分类树
      *
-     *  @return
+     * @return
      */
     @Override
     public List<PrdProductCategoryTreeRo> categoryTree() {
@@ -73,8 +96,10 @@ public class PrdProductCategorySvcImpl extends BaseSvcImpl<java.lang.Long, PrdPr
         List<PrdProductCategoryMo> topProductCategoryList = _mapper.selectTopProductCategory();
         _log.info("获取产品分类查询顶级分类信息的返回值为：{}", String.valueOf(topProductCategoryList));
         for (PrdProductCategoryMo prdProductCategoryMo : topProductCategoryList) {
-            PrdProductCategoryTreeRo productCategoryTreeRo = dozerMapper.map(prdProductCategoryMo, PrdProductCategoryTreeRo.class);
-            List<PrdProductCategoryTreeRo> categoryTreeByCodeList = thisSvc.categoryTreeByCode(prdProductCategoryMo.getCode());
+            PrdProductCategoryTreeRo       productCategoryTreeRo  = dozerMapper.map(prdProductCategoryMo,
+                    PrdProductCategoryTreeRo.class);
+            List<PrdProductCategoryTreeRo> categoryTreeByCodeList = thisSvc
+                    .categoryTreeByCode(prdProductCategoryMo.getCode());
             if (categoryTreeByCodeList.size() != 0) {
                 productCategoryTreeRo.setCategoryList(categoryTreeByCodeList);
             }
@@ -84,19 +109,20 @@ public class PrdProductCategorySvcImpl extends BaseSvcImpl<java.lang.Long, PrdPr
     }
 
     /**
-     *  根据分类编码获取产品分类树
+     * 根据分类编码获取产品分类树
      *
-     *  @param code
-     *  @return
+     * @param code
+     * @return
      */
     @Override
     public List<PrdProductCategoryTreeRo> categoryTreeByCode(String code) {
         _log.info("根据分类编码获取产品分类树的参数为：{}", code);
-        List<PrdProductCategoryTreeRo> list = new ArrayList<PrdProductCategoryTreeRo>();
-        List<PrdProductCategoryMo> sonProductCategoryList = _mapper.selectSonProductCategory(code);
+        List<PrdProductCategoryTreeRo> list                   = new ArrayList<PrdProductCategoryTreeRo>();
+        List<PrdProductCategoryMo>     sonProductCategoryList = _mapper.selectSonProductCategory(code);
         _log.info("根据分类编码获取产品分类树的返回值为：{}", String.valueOf(sonProductCategoryList));
         for (PrdProductCategoryMo prdProductCategoryMo : sonProductCategoryList) {
-            PrdProductCategoryTreeRo productCategoryTreeRo = dozerMapper.map(prdProductCategoryMo, PrdProductCategoryTreeRo.class);
+            PrdProductCategoryTreeRo       productCategoryTreeRo  = dozerMapper.map(prdProductCategoryMo,
+                    PrdProductCategoryTreeRo.class);
             List<PrdProductCategoryTreeRo> categoryTreeByCodeList = categoryTreeByCode(prdProductCategoryMo.getCode());
             if (categoryTreeByCodeList.size() != 0) {
                 productCategoryTreeRo.setCategoryList(categoryTreeByCodeList);

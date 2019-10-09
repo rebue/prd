@@ -69,7 +69,7 @@ public class PrdProductTests {
 //    	to.set
     }
 
-//    @Test
+    @Test
     public void saveFileTest() throws IOException {
 //		Map<String, Object> map = new HashMap<String, Object>();
 //		map.put("content", "<p>士大夫撒旦法师从vv</p><p></p><p></p><p></p><p></p>");

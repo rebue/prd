@@ -341,13 +341,13 @@ public class PrdProductSvcImpl
     public PageInfo<PrdProductListRo> pageList(PrdProductMo mo, Integer pageNum, final int pageSize,
             final String orderBy) {
         _log.info("分页查询产品信息的参数为：PrdProductMo-{}, pageNUm-{}, pageSize-{}, orderBy-{}", mo, pageNum, pageSize, orderBy);
-        PageInfo<PrdProductListRo> pageInfo = new PageInfo<PrdProductListRo>();
-        List<PrdProductListRo> list = new ArrayList<PrdProductListRo>();
-        PageInfo<PrdProductMo> selectPageInfo = PageHelper.startPage(pageNum, pageSize, orderBy)
+        PageInfo<PrdProductListRo> pageInfo       = new PageInfo<PrdProductListRo>();
+        List<PrdProductListRo>     list           = new ArrayList<PrdProductListRo>();
+        PageInfo<PrdProductMo>     selectPageInfo = PageHelper.startPage(pageNum, pageSize, orderBy)
                 .doSelectPageInfo(() -> _mapper.selectSelective(mo));
         for (PrdProductMo prdProductMo : selectPageInfo.getList()) {
-            PrdProductListRo productListRo = dozerMapper.map(prdProductMo, PrdProductListRo.class);
-            String readFileResult = iseSvc.readFileByByte(prdProductMo.getProductDetailPath());
+            PrdProductListRo productListRo  = dozerMapper.map(prdProductMo, PrdProductListRo.class);
+            String           readFileResult = iseSvc.readFileByByte(prdProductMo.getProductDetailPath());
             _log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
             productListRo.setProductDetail(readFileResult);
 
@@ -366,7 +366,7 @@ public class PrdProductSvcImpl
      * 禁用或启用产品
      * 
      * @param id
-     *            产品ID
+     *                  产品ID
      * @param isEnabled
      * @return
      */
@@ -417,8 +417,8 @@ public class PrdProductSvcImpl
             // 添加一个分类
             if (result == null) {
                 List<PrdProductCategoryMo> getLengthResult = prdProductCategorySvc.list(new PrdProductCategoryMo());
-                PrdProductCategoryMo addMo = new PrdProductCategoryMo();
-                String code;
+                PrdProductCategoryMo       addMo           = new PrdProductCategoryMo();
+                String                     code;
                 if (getLengthResult.size() < 9) {
                     code = "0" + String.valueOf(getLengthResult.size());
 
@@ -503,5 +503,13 @@ public class PrdProductSvcImpl
 
         }
         return new Ro(ResultDic.SUCCESS, "导入成功");
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public int del(final Long id) {
+        _log.info("svc.del: id-{}", id);
+        final int rowCount = super.del(id);
+        return rowCount;
     }
 }

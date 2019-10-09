@@ -30,6 +30,12 @@
 			<groupId>com.github.rebue.sbs</groupId>
 			<artifactId>smx-spring-boot-starter</artifactId>
 		</dependency>
+		
+		<!-- elasticSeach所需依赖 -->
+		<dependency>
+			<groupId>com.github.rebue.sbs</groupId>
+			<artifactId>es-spring-boot-starter</artifactId>
+		</dependency> 
 
 		<dependency>
 			<groupId>com.github.rebue.sbs</groupId>
