@@ -1,9 +1,11 @@
 package rebue.prd.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+
 import org.junit.Assert;
-import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import rebue.prd.mo.PrdProductSpecCodeMo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.IdRo;
@@ -18,7 +20,7 @@ import rebue.wheel.RandomEx;
  */
 public class PrdProductSpecCodeTests {
 
-    private final String hostUrl = "http://127.0.0.1:9009";
+    private final String hostUrl = "http://127.0.0.1:20195";
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
@@ -26,11 +28,11 @@ public class PrdProductSpecCodeTests {
     private final ObjectMapper _objectMapper = new ObjectMapper();
 
     /**
-     *  测试基本的增删改查
+     * 测试基本的增删改查
      *
-     *  @mbg.generated 自动生成，如需修改，请删除本行
+     * @mbg.generated 自动生成，如需修改，请删除本行
      */
-    @Test
+//    @Test
     public void testCrud() throws IOException, ReflectiveOperationException {
         PrdProductSpecCodeMo mo = null;
         for (int i = 0; i < 20; i++) {
@@ -61,5 +63,11 @@ public class PrdProductSpecCodeTests {
         final Ro deleteRo = _objectMapper.readValue(deleteResult, Ro.class);
         System.out.println(deleteRo);
         Assert.assertEquals(ResultDic.SUCCESS, deleteRo.getResult());
+    }
+
+    @org.junit.jupiter.api.Test
+    public void test() throws IOException {
+        final String listResult = OkhttpUtils.get(hostUrl + "/prd/productspeccode/select-by-code?code=0011");
+        System.out.println(listResult);
     }
 }

@@ -1,5 +1,7 @@
 package rebue.prd.ctrl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -135,7 +137,7 @@ public class PrdProductSpecCodeCtrl {
     Ro del(@RequestParam("id") java.lang.Long id) {
         _log.info("del PrdProductSpecCodeMo by id: {}", id);
         int result = svc.del(id);
-        Ro ro = new Ro();
+        Ro  ro     = new Ro();
         if (result == 1) {
             String msg = "删除成功";
             _log.info("{}: id-{}", msg, id);
@@ -218,5 +220,11 @@ public class PrdProductSpecCodeCtrl {
     BarcodeRo getGoodsDetailByBarcode(String barcode) {
         _log.info(" getGoodsDetailByBarcode barcode：{}", barcode);
         return svc.getGoodsDetailByBarcode(barcode);
+    }
+
+    @GetMapping("/prd/productspeccode/select-by-code")
+    public List<PrdProductSpecCodeMo> selectByCode(String code) {
+        _log.info(" selectByCode code：{}", code);
+        return svc.selectByCode(code);
     }
 }

@@ -97,7 +97,7 @@ public class PrdProductSpecCodeSvcImpl extends
      */
     @Override
     public BarcodeRo getGoodsDetailByBarcode(String barcode) {
-        BarcodeRo result = new BarcodeRo();
+        BarcodeRo            result    = new BarcodeRo();
         PrdProductSpecCodeMo getCodeMo = new PrdProductSpecCodeMo();
         getCodeMo.setCode(barcode);
         List<PrdProductSpecCodeMo> codeResult = super.list(getCodeMo);
@@ -111,7 +111,7 @@ public class PrdProductSpecCodeSvcImpl extends
                     .selectOnlineSpecByProductSpecId(specResult.getId());
             if (onlineSpecResult.size() != 0) {
                 List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
-                PrdOnlineDetailRo prdOnlineDetail = new PrdOnlineDetailRo();
+                PrdOnlineDetailRo       prdOnlineDetail  = new PrdOnlineDetailRo();
                 prdOnlineDetail.setOnlineSpecId(onlineSpecResult.get(0).getSpecId());
                 prdOnlineDetail.setOnlineId(onlineSpecResult.get(0).getOnlineId());
                 prdOnlineDetail.setSalePrice(onlineSpecResult.get(0).getSalePrice());
@@ -139,8 +139,8 @@ public class PrdProductSpecCodeSvcImpl extends
 //            }
 
         } else if (codeResult.size() > 1) {
-            List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
-            List<ProductDetailRo> productDetailList = new ArrayList<ProductDetailRo>();
+            List<PrdOnlineDetailRo> onlineDetailList  = new ArrayList<PrdOnlineDetailRo>();
+            List<ProductDetailRo>   productDetailList = new ArrayList<ProductDetailRo>();
 
             _log.info("找到多条编码详情");
             for (PrdProductSpecCodeMo item : codeResult) {
@@ -183,5 +183,14 @@ public class PrdProductSpecCodeSvcImpl extends
         }
         _log.info("即将返回的结果:-{}", result);
         return result;
+    }
+
+    /**
+     * 根据条码后N位模糊查找
+     */
+    @Override
+    public List<PrdProductSpecCodeMo> selectByCode(String code) {
+        _log.info("根据条码后N位模糊查找的参数为:code-{}", code);
+        return _mapper.selectByCode(code);
     }
 }
