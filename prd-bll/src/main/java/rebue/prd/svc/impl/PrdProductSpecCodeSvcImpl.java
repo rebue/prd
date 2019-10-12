@@ -92,9 +92,12 @@ public class PrdProductSpecCodeSvcImpl extends
         return rowCount;
     }
 
+    /**
+     * 这里的两段注释是因为不上线的商品不给买
+     */
     @Override
     public BarcodeRo getGoodsDetailByBarcode(String barcode) {
-        BarcodeRo            result    = new BarcodeRo();
+        BarcodeRo result = new BarcodeRo();
         PrdProductSpecCodeMo getCodeMo = new PrdProductSpecCodeMo();
         getCodeMo.setCode(barcode);
         List<PrdProductSpecCodeMo> codeResult = super.list(getCodeMo);
@@ -108,8 +111,9 @@ public class PrdProductSpecCodeSvcImpl extends
                     .selectOnlineSpecByProductSpecId(specResult.getId());
             if (onlineSpecResult.size() != 0) {
                 List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
-                PrdOnlineDetailRo       prdOnlineDetail  = new PrdOnlineDetailRo();
-                prdOnlineDetail.setId(onlineSpecResult.get(0).getSpecId());
+                PrdOnlineDetailRo prdOnlineDetail = new PrdOnlineDetailRo();
+                prdOnlineDetail.setOnlineSpecId(onlineSpecResult.get(0).getSpecId());
+                prdOnlineDetail.setOnlineId(onlineSpecResult.get(0).getOnlineId());
                 prdOnlineDetail.setSalePrice(onlineSpecResult.get(0).getSalePrice());
                 prdOnlineDetail.setSaleUnit(specResult.getUnit());
                 prdOnlineDetail.setSpec(onlineSpecResult.get(0).getOnlineSpec());
@@ -118,23 +122,25 @@ public class PrdProductSpecCodeSvcImpl extends
                 result.setBarcode(barcode);
                 result.setResult((byte) 1);
                 result.setOnlineDetailList(onlineDetailList);
-            } else {
-                List<ProductDetailRo> productDetailList = new ArrayList<ProductDetailRo>();
-                ProductDetailRo       productDetail     = new ProductDetailRo();
-                productDetail.setId(specResult.getId());
-                productDetail.setSalePrice(specResult.getMarketPrice());
-                productDetail.setSaleUnit(specResult.getUnit());
-                productDetail.setSpec(specResult.getName());
-                productDetailList.add(productDetail);
-                result.setMsg("找到一条产品规格信息");
-                result.setBarcode(barcode);
-                result.setResult((byte) 1);
-                result.setProductDetailList(productDetailList);
             }
+//            else {
+//                List<ProductDetailRo> productDetailList = new ArrayList<ProductDetailRo>();
+//                ProductDetailRo productDetail = new ProductDetailRo();
+//                productDetail.setProductSpecId(specResult.getId());
+//                productDetail.setProductId(specResult.getProductId());
+//                productDetail.setSalePrice(specResult.getMarketPrice());
+//                productDetail.setSaleUnit(specResult.getUnit());
+//                productDetail.setSpec(specResult.getName());
+//                productDetailList.add(productDetail);
+//                result.setMsg("找到一条产品规格信息");
+//                result.setBarcode(barcode);
+//                result.setResult((byte) 1);
+//                result.setProductDetailList(productDetailList);
+//            }
 
         } else if (codeResult.size() > 1) {
-            List<PrdOnlineDetailRo> onlineDetailList  = new ArrayList<PrdOnlineDetailRo>();
-            List<ProductDetailRo>   productDetailList = new ArrayList<ProductDetailRo>();
+            List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
+            List<ProductDetailRo> productDetailList = new ArrayList<ProductDetailRo>();
 
             _log.info("找到多条编码详情");
             for (PrdProductSpecCodeMo item : codeResult) {
@@ -146,21 +152,24 @@ public class PrdProductSpecCodeSvcImpl extends
                         .selectOnlineSpecByProductSpecId(specResult.getId());
                 if (onlineSpecResult.size() != 0) {
                     PrdOnlineDetailRo prdOnlineDetail = new PrdOnlineDetailRo();
-                    prdOnlineDetail.setId(onlineSpecResult.get(0).getSpecId());
+                    prdOnlineDetail.setOnlineSpecId(onlineSpecResult.get(0).getSpecId());
+                    prdOnlineDetail.setOnlineId(onlineSpecResult.get(0).getOnlineId());
                     prdOnlineDetail.setSalePrice(onlineSpecResult.get(0).getSalePrice());
                     prdOnlineDetail.setSaleUnit(specResult.getUnit());
                     prdOnlineDetail.setSpec(onlineSpecResult.get(0).getOnlineSpec());
                     onlineDetailList.add(prdOnlineDetail);
                     result.setOnlineDetailList(onlineDetailList);
-                } else {
-                    ProductDetailRo productDetail = new ProductDetailRo();
-                    productDetail.setId(specResult.getId());
-                    productDetail.setSalePrice(specResult.getMarketPrice());
-                    productDetail.setSaleUnit(specResult.getUnit());
-                    productDetail.setSpec(specResult.getName());
-                    productDetailList.add(productDetail);
-                    result.setProductDetailList(productDetailList);
                 }
+//                else {
+//                    ProductDetailRo productDetail = new ProductDetailRo();
+//                    productDetail.setProductSpecId(specResult.getId());
+//                    productDetail.setProductId(specResult.getProductId());
+//                    productDetail.setSalePrice(specResult.getMarketPrice());
+//                    productDetail.setSaleUnit(specResult.getUnit());
+//                    productDetail.setSpec(specResult.getName());
+//                    productDetailList.add(productDetail);
+//                    result.setProductDetailList(productDetailList);
+//                }
 
                 _log.info("结束获取上线详情或产品详情+++++++++++++++++++++++");
             }

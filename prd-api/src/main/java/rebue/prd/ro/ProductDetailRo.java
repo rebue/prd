@@ -15,7 +15,12 @@ public class ProductDetailRo {
     /**
      * 产品规格ID
      */
-    private Long id;
+    private Long productSpecId;
+
+    /**
+     * 产品ID
+     */
+    private Long productId;
 
     /**
      * 规格名称

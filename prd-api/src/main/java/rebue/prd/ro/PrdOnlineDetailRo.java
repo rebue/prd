@@ -21,8 +21,12 @@ public class PrdOnlineDetailRo {
     /**
      * 上线规格ID
      */
-    private Long id;
+    private Long onlineSpecId;
 
+    /**
+     * 上线ID
+     */
+    private Long   onlineId;
     /**
      * 上线规格名称
      */
