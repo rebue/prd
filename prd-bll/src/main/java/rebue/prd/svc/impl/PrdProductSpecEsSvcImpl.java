@@ -22,7 +22,6 @@ import org.elasticsearch.search.sort.ScoreSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rebue.prd.mo.PrdProductSpecMo;
@@ -35,11 +34,8 @@ public class PrdProductSpecEsSvcImpl extends EsBaseSvcImpl<PrdProductSpecSo> imp
 
     private static final Logger _log = LoggerFactory.getLogger(PrdProductSpecEsSvcImpl.class);
 
-    //
     @Resource
     private RestHighLevelClient esClient;
-
-    @Autowired
 
     @Override
     public String getIndexName() {

@@ -34,7 +34,7 @@ public class PrdProductSpecEsCtrl {
     }
 
     /**
-     * 获取单个产品规格
+     * 根据产品名称获取产品规格
      */
     @GetMapping("/prd/prdproductspecso/select-by-name")
     List<PrdProductSpecMo> selectByName(@RequestParam final String name) {
