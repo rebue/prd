@@ -19,7 +19,10 @@ import rebue.prd.mapper.PrdProductCategoryMapper;
 import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.prd.ro.PrdProductCategoryTreeRo;
 import rebue.prd.svc.PrdProductCategorySvc;
+import rebue.robotech.dic.ResultDic;
+import rebue.robotech.ro.Ro;
 import rebue.robotech.svc.impl.BaseSvcImpl;
+import rebue.wheel.StrUtils;
 
 /**
  * 产品分类
@@ -62,6 +65,52 @@ public class PrdProductCategorySvcImpl extends
         }
         final int rowCount = super.add(mo);
         return rowCount;
+    }
+
+    /**
+     * 添加产品分类 流程： 1、判断参数 2、判断code是否为null，如果为null说明为顶级分类，否则为子类
+     * 3、如果为顶级分类时，根据卖家和店铺查询分类的数量，如果数量小于10（不包含10）， 则前面补0
+     * 4、如果为子类时，根据传过来的code查询该子类下面的分类，如果数量小于10（不包含10）， 则前面补0 5、添加店铺搜索分类
+     * 注意：顶级分类为两位数，子类则在父类下面补两位
+     * 
+     * @param mo
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Ro addEx(PrdProductCategoryMo mo) {
+        _log.info("添加产品分类的参数为：{}", mo);
+        Ro ro = new Ro();
+        if (mo.getFullName() == null || mo.getName() == null) {
+            _log.error("添加产品分类时出现参数错误，请求的参数为：{}", mo);
+            ro.setResult(ResultDic.PARAM_ERROR);
+            ro.setMsg("参数错误");
+            return ro;
+        }
+
+        _log.info("添加产品分类根据分类编码查询分类数量的参数为：code-{}", mo.getCode());
+        int count = _mapper.countBySellerAndShopAndCode(mo.getCode());
+        _log.info("添加产品分类根据分类编码查询分类数量的返回值为：{}", count);
+        // 分类编码
+        String code = StrUtils.padLeft(String.valueOf(count), 2, '0');
+        // 如果添加的分类为子类，则先计算子类的code在与父类的code拼接
+        if (mo.getCode() != null && !"".equals(mo.getCode())) {
+            code = mo.getCode() + code;
+        }
+        mo.setCode(code);
+
+        _log.info("添加产品分类的参数为：{}", mo);
+        int addResult = thisSvc.add(mo);
+        _log.info("添加产品分类的返回值为：{}", addResult);
+        if (addResult != 1) {
+            _log.error("添加产品分类时出现错误，请求的参数为：{}", mo);
+            throw new RuntimeException("添加出错");
+        }
+
+        _log.info("添加产品分类成功，请求的参数为：{}", mo);
+        ro.setResult(ResultDic.SUCCESS);
+        ro.setMsg("添加成功");
+        return ro;
     }
 
     @Override

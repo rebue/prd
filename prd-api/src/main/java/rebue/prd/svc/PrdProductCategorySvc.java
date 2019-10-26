@@ -1,9 +1,11 @@
 package rebue.prd.svc;
 
 import java.util.List;
+
 import rebue.prd.jo.PrdProductCategoryJo;
 import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.prd.ro.PrdProductCategoryTreeRo;
+import rebue.robotech.ro.Ro;
 import rebue.robotech.svc.BaseSvc;
 
 /**
@@ -14,17 +16,25 @@ import rebue.robotech.svc.BaseSvc;
 public interface PrdProductCategorySvc extends BaseSvc<java.lang.Long, PrdProductCategoryMo, PrdProductCategoryJo> {
 
     /**
-     *  获取产品分类树
+     * 获取产品分类树
      *
-     *  @return
+     * @return
      */
     List<PrdProductCategoryTreeRo> categoryTree();
 
     /**
-     *  根据分类编码获取产品分类树
+     * 根据分类编码获取产品分类树
      *
-     *  @param code
-     *  @return
+     * @param code
+     * @return
      */
     List<PrdProductCategoryTreeRo> categoryTreeByCode(String code);
+
+    /**
+     * 添加产品分类
+     * 
+     * @param mo
+     * @return
+     */
+    Ro addEx(PrdProductCategoryMo mo);
 }

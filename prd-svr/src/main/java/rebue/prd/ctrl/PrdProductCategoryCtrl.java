@@ -1,8 +1,9 @@
 package rebue.prd.ctrl;
 
-import com.github.pagehelper.PageInfo;
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.github.pagehelper.PageInfo;
+
 import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.prd.ro.PrdProductCategoryTreeRo;
 import rebue.prd.svc.PrdProductCategorySvc;
 import rebue.robotech.dic.ResultDic;
-import rebue.robotech.ro.IdRo;
 import rebue.robotech.ro.Ro;
 
 /**
@@ -52,25 +55,11 @@ public class PrdProductCategoryCtrl {
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
     @PostMapping("/prd/productcategory")
-    IdRo add(@RequestBody PrdProductCategoryMo mo) throws Exception {
+    Ro add(@RequestBody PrdProductCategoryMo mo) throws Exception {
         _log.info("add PrdProductCategoryMo: {}", mo);
-        IdRo ro = new IdRo();
+        Ro ro = new Ro();
         try {
-            int result = svc.add(mo);
-            if (result == 1) {
-                String msg = "添加成功";
-                _log.info("{}: mo-{}", msg, mo);
-                ro.setMsg(msg);
-                ro.setResult(ResultDic.SUCCESS);
-                ro.setId(mo.getId().toString());
-                return ro;
-            } else {
-                String msg = "添加失败";
-                _log.error("{}: mo-{}", msg, mo);
-                ro.setMsg(msg);
-                ro.setResult(ResultDic.FAIL);
-                return ro;
-            }
+            return svc.addEx(mo);
         } catch (DuplicateKeyException e) {
             String msg = "添加失败，" + _uniqueFilesName + "已存在，不允许出现重复";
             _log.error(msg + ": mo-" + mo, e);
@@ -133,7 +122,7 @@ public class PrdProductCategoryCtrl {
     Ro del(@RequestParam("id") java.lang.Long id) {
         _log.info("del PrdProductCategoryMo by id: {}", id);
         int result = svc.del(id);
-        Ro ro = new Ro();
+        Ro  ro     = new Ro();
         if (result == 1) {
             String msg = "删除成功";
             _log.info("{}: id-{}", msg, id);
@@ -155,7 +144,9 @@ public class PrdProductCategoryCtrl {
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
     @GetMapping("/prd/productcategory")
-    PageInfo<PrdProductCategoryMo> list(PrdProductCategoryMo mo, @RequestParam(value = "pageNum", required = false) Integer pageNum, @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+    PageInfo<PrdProductCategoryMo> list(PrdProductCategoryMo mo,
+            @RequestParam(value = "pageNum", required = false) Integer pageNum,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         if (pageNum == null)
             pageNum = 1;
         if (pageSize == null)
@@ -183,9 +174,9 @@ public class PrdProductCategoryCtrl {
     }
 
     /**
-     *  获取产品分类树
+     * 获取产品分类树
      *
-     *  @return
+     * @return
      */
     @GetMapping("/prd/productcategory/tree")
     List<PrdProductCategoryTreeRo> categoryTree() {

@@ -121,8 +121,7 @@ public class PrdProductSvcImpl
     public Ro addProduct(AddProductTo to) {
         _log.info("添加产品信息的请求参数为：{}", to);
         Ro ro = new Ro();
-        if (to.getCategoryId() == null || to.getProductName() == null || to.getPics().size() == 0
-                || to.getSpec().size() == 0) {
+        if (to.getCategoryId() == null || to.getProductName() == null || to.getSpec().size() == 0) {
             _log.error("添加产品信息时出现参数为null,请求的参数为：{}", to);
             ro.setResult(ResultDic.PARAM_ERROR);
             ro.setMsg("参数有误");
@@ -130,30 +129,32 @@ public class PrdProductSvcImpl
         }
 
         // 产品ID
-        Long productId = _idWorker.getId();
+        Long         productId = _idWorker.getId();
+        PrdProductMo productMo = new PrdProductMo();
 
-        SaveFileTo saveFileTo = new SaveFileTo();
-        saveFileTo.setContent(to.getProductDetail());
-        saveFileTo.setModuleName("productDetail");
-        saveFileTo.setFileType("html");
-        _log.info("添加产品信息保存产品详情文件的参数为：{}", saveFileTo);
-        SaveFileRo saveFileRo = iseSvc.saveFile(saveFileTo);
-        _log.info("添加产品信息保存产品详情文件的返回值为：{}", saveFileRo);
-        if (saveFileRo.getResult() != 1) {
-            _log.error("添加产品信息保存产品详情文件时出现异常，请求的参数为：{}", saveFileTo);
-            ro.setResult(ResultDic.FAIL);
-            ro.setMsg("保存产品详情出现异常");
-            return ro;
+        if (to.getProductDetail() != null) {
+            SaveFileTo saveFileTo = new SaveFileTo();
+            saveFileTo.setContent(to.getProductDetail());
+            saveFileTo.setModuleName("productDetail");
+            saveFileTo.setFileType("html");
+            _log.info("添加产品信息保存产品详情文件的参数为：{}", saveFileTo);
+            SaveFileRo saveFileRo = iseSvc.saveFile(saveFileTo);
+            _log.info("添加产品信息保存产品详情文件的返回值为：{}", saveFileRo);
+            if (saveFileRo.getResult() != 1) {
+                _log.error("添加产品信息保存产品详情文件时出现异常，请求的参数为：{}", saveFileTo);
+                ro.setResult(ResultDic.FAIL);
+                ro.setMsg("保存产品详情出现异常");
+                return ro;
+            }
+            productMo.setProductDetailPath(saveFileRo.getFilePath());
         }
 
-        PrdProductMo productMo = new PrdProductMo();
         productMo.setId(productId);
         productMo.setCategoryId(to.getCategoryId());
         productMo.setProductName(to.getProductName());
         productMo.setIsEnabled(true);
         productMo.setManufacturer(to.getManufacturer());
         productMo.setBrand(to.getBrand());
-        productMo.setProductDetailPath(saveFileRo.getFilePath());
         productMo.setOpId(to.getOpId());
         productMo.setCreateTime(new Date());
         _log.info("添加产品信息的参数为：{}", productMo);
@@ -193,12 +194,14 @@ public class PrdProductSvcImpl
             }
         }
 
-        _log.info("添加产品信息批量添加产品图片的参数为：list-{}, productId-{}", to.getPics(), productId);
-        Ro batchAddPicByProductIdRo = prdProductPicSvc.batchAddPicByProductId(to.getPics(), productId);
-        _log.info("添加产品信息批量添加产品图片的返回值为：{}", batchAddPicByProductIdRo);
-        if (batchAddPicByProductIdRo.getResult() != ResultDic.SUCCESS) {
-            _log.info("添加产品信息批量添加产品图片出现异常，请求的参数为：{}", to);
-            throw new RuntimeException("添加产品图片失败");
+        if (to.getPics().size() != 0) {
+            _log.info("添加产品信息批量添加产品图片的参数为：list-{}, productId-{}", to.getPics(), productId);
+            Ro batchAddPicByProductIdRo = prdProductPicSvc.batchAddPicByProductId(to.getPics(), productId);
+            _log.info("添加产品信息批量添加产品图片的返回值为：{}", batchAddPicByProductIdRo);
+            if (batchAddPicByProductIdRo.getResult() != ResultDic.SUCCESS) {
+                _log.info("添加产品信息批量添加产品图片出现异常，请求的参数为：{}", to);
+                throw new RuntimeException("添加产品图片失败");
+            }
         }
 
         _log.info("添加产品信息成功，请求的参数为：{}", to);
