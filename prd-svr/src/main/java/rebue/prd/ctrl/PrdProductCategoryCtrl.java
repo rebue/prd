@@ -182,4 +182,16 @@ public class PrdProductCategoryCtrl {
     List<PrdProductCategoryTreeRo> categoryTree() {
         return svc.categoryTree();
     }
+
+    /**
+     * 禁用/启用产品搜索分类 注：该方法会禁用/启用该分类和该分类下的所有子分类
+     * 
+     * @param mo
+     * @return
+     */
+    @PutMapping("/prd/productcategory/enable")
+    Ro enable(@RequestBody PrdProductCategoryMo mo) {
+        _log.info("禁用/启用产品搜索分类的请求参数为：{}", mo);
+        return svc.enable(mo);
+    }
 }

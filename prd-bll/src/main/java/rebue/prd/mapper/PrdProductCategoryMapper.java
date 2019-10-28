@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.robotech.mapper.MybatisBaseMapper;
@@ -101,4 +102,12 @@ public interface PrdProductCategoryMapper extends MybatisBaseMapper<PrdProductCa
      */
     @Select("select count(*) from PRD_PRODUCT_CATEGORY where CODE like '${code}__'")
     int countBySellerAndShopAndCode(@Param("code") String code);
+
+    /**
+     * 禁用/启用产品搜索分类 注：该方法会禁用/启用该分类和该分类下的所有子类
+     * 
+     * @return
+     */
+    @Update("update PRD_PRODUCT_CATEGORY set IS_ENABLED=#{isEnabled,jdbcType=TINYINT} where CODE like '${code}%'")
+    int enable(@Param("code") String code, @Param("isEnabled") Boolean isEnabled);
 }

@@ -37,4 +37,12 @@ public interface PrdProductCategorySvc extends BaseSvc<java.lang.Long, PrdProduc
      * @return
      */
     Ro addEx(PrdProductCategoryMo mo);
+
+    /**
+     * 禁用/启用产品搜索分类
+     * 
+     * @param mo
+     * @return
+     */
+    Ro enable(PrdProductCategoryMo mo);
 }
