@@ -24,6 +24,7 @@ import rebue.onl.mo.OnlOnlineMo;
 import rebue.onl.mo.OnlOnlineSpecMo;
 import rebue.onl.svr.feign.OnlOnlineSpecSvc;
 import rebue.onl.svr.feign.OnlOnlineSvc;
+import rebue.onl.to.AddOnlineTo;
 import rebue.prd.dao.PrdProductDao;
 import rebue.prd.jo.PrdProductJo;
 import rebue.prd.mapper.PrdProductMapper;
@@ -43,6 +44,7 @@ import rebue.prd.to.ImportProductTo;
 import rebue.prd.to.ImportTo;
 import rebue.prd.to.ModifyProductSpecTo;
 import rebue.prd.to.ModifyProductTo;
+import rebue.prd.to.OnlineProductTo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.Ro;
 import rebue.robotech.svc.impl.BaseSvcImpl;
@@ -514,5 +516,40 @@ public class PrdProductSvcImpl
         _log.info("svc.del: id-{}", id);
         final int rowCount = super.del(id);
         return rowCount;
+    }
+
+    /**
+     * 从产品中上线商品
+     */
+    @Override
+    public Ro onlineFormProduct(OnlineProductTo to) {
+        _log.info("从产品中上线商品: to-{}", to);
+        AddOnlineTo onlineTo = new AddOnlineTo();
+        // 添加上线信息
+        onlineTo.setProductId(to.getProductId());
+        onlineTo.setIsBelowOnline((byte) 1);
+        onlineTo.setIsOnlinePlatform((byte) 0);
+        onlineTo.setSupplierId(to.getSupplierId());
+        onlineTo.setOnlineDetail(to.getOnlineDetail());
+        onlineTo.setOpId(to.getOpId());
+        onlineTo.setOnlineOrgId(to.getOnlineOrgId());
+        onlineTo.setOnlineName(to.getOnlineName());
+        onlineTo.setSubjectType(to.getSubjectType());
+        onlineTo.setDeliverOrgId(to.getDeliverOrgId());
+        onlineTo.setIsEditSupplier(to.getIsEditSupplier());
+        // 上线规格
+        onlineTo.setOnlineSpecs(to.getOnlineSpecs());
+        // 上线规格属性
+        onlineTo.setAttrNames(to.getAttrNames());
+        onlineTo.setAttrValues(to.getAttrValues());
+        // 搜索分类上线
+        onlineTo.setClassificationId(to.getClassificationId());
+        // 商品图片
+        onlineTo.setGoodsQsmm(to.getGoodsQsmm());
+        onlineTo.setSlideshow(to.getSlideshow());
+        _log.info("从产品中上线商品的上线信息为: to-{}", onlineTo);
+
+        onlOnlineSvc.onlineToPos(onlineTo);
+        return null;
     }
 }

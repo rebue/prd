@@ -11,16 +11,11 @@ import rebue.onl.to.OnlOnlineSpecTo;
 
 @Data
 @JsonInclude(Include.NON_NULL)
-public class onlineProductTo {
+public class OnlineProductTo {
     /**
      * 产品id
      */
     private Long productId;
-
-    /**
-     * 产品详情id
-     */
-    private Long productSpecId;
 
     /**
      * 上线id

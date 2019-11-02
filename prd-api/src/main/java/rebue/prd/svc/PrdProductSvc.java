@@ -1,7 +1,5 @@
 package rebue.prd.svc;
 
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.github.pagehelper.PageInfo;
 
 import rebue.prd.jo.PrdProductJo;
@@ -10,6 +8,7 @@ import rebue.prd.ro.PrdProductListRo;
 import rebue.prd.to.AddProductTo;
 import rebue.prd.to.ImportTo;
 import rebue.prd.to.ModifyProductTo;
+import rebue.prd.to.OnlineProductTo;
 import rebue.robotech.ro.Ro;
 import rebue.robotech.svc.BaseSvc;
 
@@ -51,7 +50,7 @@ public interface PrdProductSvc extends BaseSvc<java.lang.Long, PrdProductMo, Prd
      * 禁用或启用产品
      * 
      * @param id
-     *            产品ID
+     *                  产品ID
      * @param isEnabled
      * @return
      */
@@ -63,6 +62,13 @@ public interface PrdProductSvc extends BaseSvc<java.lang.Long, PrdProductMo, Prd
      * @param to
      * @return
      */
-    Ro importProduct(@RequestBody ImportTo to);
+    Ro importProduct(ImportTo to);
 
+    /**
+     * 从产品中上线商品
+     * 
+     * @param to
+     * @return
+     */
+    Ro onlineFormProduct(OnlineProductTo to);
 }

@@ -25,6 +25,7 @@ import rebue.prd.svc.PrdProductSvc;
 import rebue.prd.to.AddProductTo;
 import rebue.prd.to.ImportTo;
 import rebue.prd.to.ModifyProductTo;
+import rebue.prd.to.OnlineProductTo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.Ro;
 import rebue.wheel.turing.JwtUtils;
@@ -104,7 +105,7 @@ public class PrdProductCtrl {
     Ro del(@RequestParam("id") java.lang.Long id) {
         _log.info("del PrdProductMo by id: {}", id);
         int result = svc.del(id);
-        Ro ro = new Ro();
+        Ro  ro     = new Ro();
         if (result == 1) {
             String msg = "删除成功";
             _log.info("{}: id-{}", msg, id);
@@ -191,7 +192,7 @@ public class PrdProductCtrl {
      * 禁用或启用产品
      * 
      * @param id
-     *            产品ID
+     *                  产品ID
      * @param isEnabled
      * @return
      */
@@ -205,6 +206,41 @@ public class PrdProductCtrl {
     Ro importProduct(@RequestBody ImportTo to) {
         _log.info("导入产品数据参数为 ImportProductTo-{}", to);
         return svc.importProduct(to);
+    }
+
+    /**
+     * 从产品中上线商品
+     * 
+     * @param to
+     * @param req
+     * @return
+     * @throws ParseException
+     * @throws NumberFormatException
+     */
+    @PostMapping("/prd/product/online")
+    Ro onlineFormProduct(@RequestBody OnlineProductTo to, HttpServletRequest req)
+            throws NumberFormatException, ParseException {
+        _log.info("从产品中上线商品的参数为:{}", to);
+        // 获取当前登录用户id
+        Long currentUserId = 520469568947224576L;
+        if (!isDebug) {
+            currentUserId = JwtUtils.getJwtUserIdInCookie(req);
+        }
+        final Ro ro = new Ro();
+        if (currentUserId == null) {
+            ro.setResult(ResultDic.FAIL);
+            ro.setMsg("您未登录，请登录后再试。。。");
+            return ro;
+        }
+        to.setOpId(currentUserId);
+        try {
+            return svc.onlineFormProduct(to);
+        } catch (Exception e) {
+            _log.error("添加产品信息出现异常，{}", e);
+            ro.setResult(ResultDic.FAIL);
+            ro.setMsg(e.getMessage());
+            return ro;
+        }
     }
 
 }
