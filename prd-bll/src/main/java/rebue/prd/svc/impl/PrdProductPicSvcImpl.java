@@ -102,7 +102,7 @@ public class PrdProductPicSvcImpl
 		_log.info("批量添加产品图片的请求参数为：{}", String.valueOf(pics));
 		Ro ro = new Ro();
 		if (pics.size() == 0) {
-			_log.error("批量添加产品图片时发现请求参数为null");
+			_log.error("批量添加产品图片时发现请求参数为pics");
 			ro.setResult(ResultDic.PARAM_ERROR);
 			ro.setMsg("参数有误");
 			return ro;

@@ -27,6 +27,7 @@ import rebue.onl.svr.feign.OnlOnlineSvc;
 import rebue.onl.to.AddOnlineTo;
 import rebue.prd.dao.PrdProductDao;
 import rebue.prd.jo.PrdProductJo;
+import rebue.prd.mapper.PrdProductCategoryMapper;
 import rebue.prd.mapper.PrdProductMapper;
 import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.prd.mo.PrdProductMo;
@@ -98,6 +99,9 @@ public class PrdProductSvcImpl
     @Resource
     private Mapper dozerMapper;
 
+    @Resource
+    private PrdProductCategoryMapper prdProductCategoryMapper;
+
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
      */
@@ -131,7 +135,7 @@ public class PrdProductSvcImpl
         }
 
         // 产品ID
-        Long         productId = _idWorker.getId();
+        Long productId = _idWorker.getId();
         PrdProductMo productMo = new PrdProductMo();
 
         if (to.getProductDetail() != null) {
@@ -219,7 +223,6 @@ public class PrdProductSvcImpl
      * @return
      */
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Ro modifyProduct(ModifyProductTo to) {
         _log.info("修改产品信息的请求参数为：{}", to);
         Ro ro = new Ro();
@@ -265,7 +268,7 @@ public class PrdProductSvcImpl
 
         for (ModifyProductSpecTo modifyProductSpecTo : to.getSpec()) {
             PrdProductSpecMo prdProductSpecMo = dozerMapper.map(modifyProductSpecTo, PrdProductSpecMo.class);
-            if (modifyProductSpecTo.getId().toString().length() > 13) {
+            if (modifyProductSpecTo.getId().toString().length() > 13) { // 这里是因为页面为了reactjs里面的key，所以新的记录也会有一个id，不过是时间戳，所以这里这样判断。
                 _log.info("修改产品信息修改产品规格信息的参数为：{}", prdProductSpecMo);
                 int modifyProductSpecResult = prdProductSpecSvc.modify(prdProductSpecMo);
                 _log.info("修改产品信息修改产品规格信息的返回值为：{}", modifyProductSpecResult);
@@ -289,23 +292,23 @@ public class PrdProductSvcImpl
                 Long productSpecId = _idWorker.getId();
                 prdProductSpecMo.setId(productSpecId);
                 prdProductSpecMo.setProductId(to.getId());
-                _log.info("修改产品信息添加产品规格信息的参数为：{}", prdProductSpecMo);
+                _log.info("添加产品信息添加产品规格信息的参数为：{}", prdProductSpecMo);
                 int addProductSpecResult = prdProductSpecSvc.add(prdProductSpecMo);
-                _log.info("修改产品信息添加产品规格信息的返回值为：{}", addProductSpecResult);
+                _log.info("添加产品信息添加产品规格信息的返回值为：{}", addProductSpecResult);
                 if (addProductSpecResult != 1) {
-                    _log.error("修改产品信息添加产品规格信息出现错误，请求的参数为：{}", prdProductSpecMo);
-                    throw new RuntimeException("修改规格信息出现异常");
+                    _log.error("添加产品信息添加产品规格信息出现错误，请求的参数为：{}", prdProductSpecMo);
+                    throw new RuntimeException("添加规格信息出现异常");
                 }
 
                 PrdProductSpecCodeMo productSpecCodeMo = new PrdProductSpecCodeMo();
                 productSpecCodeMo.setId(_idWorker.getId());
                 productSpecCodeMo.setProductSpecId(productSpecId);
                 productSpecCodeMo.setCode(modifyProductSpecTo.getCode());
-                _log.info("修改产品信息添加产品规格编码信息的参数为：{}", productSpecCodeMo);
+                _log.info("添加产品信息添加产品规格编码信息的参数为：{}", productSpecCodeMo);
                 int addProductSpecCodeResult = prdProductSpecCodeSvc.add(productSpecCodeMo);
-                _log.info("修改产品信息添加产品规格编码信息的返回值为：{}", addProductSpecCodeResult);
+                _log.info("添加产品信息添加产品规格编码信息的返回值为：{}", addProductSpecCodeResult);
                 if (addProductSpecCodeResult != 1) {
-                    _log.error("修改产品信息添加产品规格编码出现错误，请求的参数为：{}", productSpecCodeMo);
+                    _log.error("添加产品信息添加产品规格编码出现错误，请求的参数为：{}", productSpecCodeMo);
                     throw new RuntimeException("添加规格编码出现异常");
                 }
             }
@@ -329,6 +332,7 @@ public class PrdProductSvcImpl
         _log.info("修改产品信息成功，请求的参数为：{}", to);
         ro.setResult(ResultDic.SUCCESS);
         ro.setMsg("修改成功");
+        
         return ro;
     }
 
@@ -352,14 +356,34 @@ public class PrdProductSvcImpl
                 .doSelectPageInfo(() -> _mapper.selectSelective(mo));
         for (PrdProductMo prdProductMo : selectPageInfo.getList()) {
             PrdProductListRo productListRo  = dozerMapper.map(prdProductMo, PrdProductListRo.class);
+            _log.info("获取分类的参数为-{}",prdProductMo.getCategoryId());
+            PrdProductCategoryMo productCategoryMo = prdProductCategorySvc.getById(prdProductMo.getCategoryId());
+            _log.info("获取分类的结果为-{}",productCategoryMo);
+//            _log.info("开始获取子分类");
+//            String fullName = "" ;
+//            String code = "" ;
+//            PrdProductCategoryMo Category ;
+//            if(productCategoryMo != null) {
+//                code += productCategoryMo.getCode();
+//                fullName += productCategoryMo.getFullName();
+//                for (;;) {
+//                    _log.info("获取编码的参数为code-{}",code);
+//                    Category =  prdProductCategoryMapper.getPrdProductCategoryByCode(code);
+//                    _log.info("获取编码的结果为Category-{}",Category);
+//                    if(Category !=  null ) {
+//                        fullName += "/"+ Category.getFullName();
+//                        code     = Category.getCode();
+//                    }else {
+//                        break;
+//                    }
+//                }
+//            }
+            productListRo.setFullName(productCategoryMo.getFullName());
+
+            
             String           readFileResult = iseSvc.readFileByByte(prdProductMo.getProductDetailPath());
             _log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
             productListRo.setProductDetail(readFileResult);
-
-            PrdProductCategoryMo productCategoryMo = prdProductCategorySvc.getById(prdProductMo.getCategoryId());
-            if (productCategoryMo != null) {
-                productListRo.setFullName(productCategoryMo.getFullName());
-            }
             list.add(productListRo);
         }
         pageInfo = dozerMapper.map(selectPageInfo, PageInfo.class);
@@ -371,7 +395,7 @@ public class PrdProductSvcImpl
      * 禁用或启用产品
      * 
      * @param id
-     *                  产品ID
+     *            产品ID
      * @param isEnabled
      * @return
      */
@@ -422,8 +446,8 @@ public class PrdProductSvcImpl
             // 添加一个分类
             if (result == null) {
                 List<PrdProductCategoryMo> getLengthResult = prdProductCategorySvc.list(new PrdProductCategoryMo());
-                PrdProductCategoryMo       addMo           = new PrdProductCategoryMo();
-                String                     code;
+                PrdProductCategoryMo addMo = new PrdProductCategoryMo();
+                String code;
                 if (getLengthResult.size() < 9) {
                     code = "0" + String.valueOf(getLengthResult.size());
 

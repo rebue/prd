@@ -85,6 +85,7 @@ public class PrdProductSpecSvcImpl
         final int rowCount = super.modify(mo);
         // 修改成功时修改搜索引擎中的参数
         if (rowCount == 1) {
+              _log.info("修改成功，更新搜索引擎中的数据-{}", mo);
             prdProductSpecEsSvc.modify(dozerMapper.map(mo, PrdProductSpecSo.class));
         }
         return rowCount;
@@ -110,10 +111,10 @@ public class PrdProductSpecSvcImpl
     @Override
     public List<ModifyProductSpecTo> listEx(PrdProductSpecMo mo) {
         _log.info("listEx PrdProductSpecMo：{}", mo);
-        List<ModifyProductSpecTo> list            = new ArrayList<ModifyProductSpecTo>();
-        List<PrdProductSpecMo>    productSpecList = thisSvc.list(mo);
+        List<ModifyProductSpecTo> list = new ArrayList<ModifyProductSpecTo>();
+        List<PrdProductSpecMo> productSpecList = thisSvc.list(mo);
         for (PrdProductSpecMo prdProductSpecMo : productSpecList) {
-            ModifyProductSpecTo  productSpecTo     = dozerMapper.map(prdProductSpecMo, ModifyProductSpecTo.class);
+            ModifyProductSpecTo productSpecTo = dozerMapper.map(prdProductSpecMo, ModifyProductSpecTo.class);
             PrdProductSpecCodeMo productSpecCodeMo = new PrdProductSpecCodeMo();
             productSpecCodeMo.setProductSpecId(prdProductSpecMo.getId());
             PrdProductSpecCodeMo prdProductSpecCodeMo = prdProductSpecCodeSvc.getOne(productSpecCodeMo);
