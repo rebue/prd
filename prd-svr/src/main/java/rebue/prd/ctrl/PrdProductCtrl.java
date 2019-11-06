@@ -22,7 +22,6 @@ import com.github.pagehelper.PageInfo;
 import rebue.prd.mo.PrdProductMo;
 import rebue.prd.ro.GetProductRo;
 import rebue.prd.ro.PrdProductListRo;
-import rebue.prd.ro.ProductRo;
 import rebue.prd.svc.PrdProductSvc;
 import rebue.prd.to.AddProductTo;
 import rebue.prd.to.ImportTo;
