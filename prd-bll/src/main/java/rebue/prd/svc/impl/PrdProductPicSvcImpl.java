@@ -74,15 +74,20 @@ public class PrdProductPicSvcImpl
 			ro.setMsg("参数不正确");
 			return ro;
 		}
-
-		int delResult = _mapper.delectByProductId(productId);
-		_log.info("根据产品id删除产品图片的返回值为：{}", delResult);
-		if (delResult < 1) {
-			_log.error("根据产品id删除产品图片时出现异常，请求的参数为：{}", productId);
-			ro.setResult(ResultDic.FAIL);
-			ro.setMsg("操作出错");
-			return ro;
-		}
+		
+		try {
+	        int delResult = _mapper.delectByProductId(productId);
+	        _log.info("根据产品id删除产品图片的返回值为：{}", delResult);
+        } catch (Exception e) {
+            throw new RuntimeException("删除产品图片出现异常");
+        }
+//      这里注释是因为新添加的商品是没有旧的图片的
+//		if (delResult < 1) { 
+//			_log.error("根据产品id删除产品图片时出现异常，请求的参数为：{}", productId);
+//			ro.setResult(ResultDic.FAIL);
+//			ro.setMsg("操作出错");
+//			return ro;
+//		}
 
 		_log.error("根据产品id删除产品图片成功，请求的参数为：{}", productId);
 		ro.setResult(ResultDic.SUCCESS);

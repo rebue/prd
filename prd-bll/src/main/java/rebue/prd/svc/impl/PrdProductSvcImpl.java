@@ -1,6 +1,5 @@
 package rebue.prd.svc.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,8 +19,6 @@ import com.github.pagehelper.PageInfo;
 import rebue.ise.ro.SaveFileRo;
 import rebue.ise.svr.feign.IserSvc;
 import rebue.ise.to.SaveFileTo;
-import rebue.onl.mo.OnlOnlineMo;
-import rebue.onl.mo.OnlOnlineSpecMo;
 import rebue.onl.svr.feign.OnlOnlineSpecSvc;
 import rebue.onl.svr.feign.OnlOnlineSvc;
 import rebue.onl.to.AddOnlineTo;
@@ -333,7 +330,7 @@ public class PrdProductSvcImpl
         _log.info("修改产品信息成功，请求的参数为：{}", to);
         ro.setResult(ResultDic.SUCCESS);
         ro.setMsg("修改成功");
-        
+
         return ro;
     }
 
@@ -351,40 +348,24 @@ public class PrdProductSvcImpl
     public PageInfo<PrdProductListRo> pageList(PrdProductMo mo, Integer pageNum, final int pageSize,
             final String orderBy) {
         _log.info("分页查询产品信息的参数为：PrdProductMo-{}, pageNUm-{}, pageSize-{}, orderBy-{}", mo, pageNum, pageSize, orderBy);
-        PageInfo<PrdProductListRo> pageInfo       = new PageInfo<PrdProductListRo>();
-        List<PrdProductListRo>     list           = new ArrayList<PrdProductListRo>();
-        PageInfo<PrdProductMo>     selectPageInfo = PageHelper.startPage(pageNum, pageSize, orderBy)
+        PageInfo<PrdProductListRo> pageInfo = new PageInfo<PrdProductListRo>();
+        List<PrdProductListRo> list = new ArrayList<PrdProductListRo>();
+        PageInfo<PrdProductMo> selectPageInfo = PageHelper.startPage(pageNum, pageSize, orderBy)
                 .doSelectPageInfo(() -> _mapper.selectSelective(mo));
         for (PrdProductMo prdProductMo : selectPageInfo.getList()) {
-            PrdProductListRo productListRo  = dozerMapper.map(prdProductMo, PrdProductListRo.class);
-            _log.info("获取分类的参数为-{}",prdProductMo.getCategoryId());
+            PrdProductListRo productListRo = dozerMapper.map(prdProductMo, PrdProductListRo.class);
+            _log.info("获取分类的参数为-{}", prdProductMo.getCategoryId());
             PrdProductCategoryMo productCategoryMo = prdProductCategorySvc.getById(prdProductMo.getCategoryId());
-            _log.info("获取分类的结果为-{}",productCategoryMo);
-//            _log.info("开始获取子分类");
-//            String fullName = "" ;
-//            String code = "" ;
-//            PrdProductCategoryMo Category ;
-//            if(productCategoryMo != null) {
-//                code += productCategoryMo.getCode();
-//                fullName += productCategoryMo.getFullName();
-//                for (;;) {
-//                    _log.info("获取编码的参数为code-{}",code);
-//                    Category =  prdProductCategoryMapper.getPrdProductCategoryByCode(code);
-//                    _log.info("获取编码的结果为Category-{}",Category);
-//                    if(Category !=  null ) {
-//                        fullName += "/"+ Category.getFullName();
-//                        code     = Category.getCode();
-//                    }else {
-//                        break;
-//                    }
-//                }
-//            }
+            _log.info("获取分类的结果为-{}", productCategoryMo);
+
             productListRo.setFullName(productCategoryMo.getFullName());
 
-            
-            String           readFileResult = iseSvc.readFileByByte(prdProductMo.getProductDetailPath());
-            _log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
-            productListRo.setProductDetail(readFileResult);
+            if (prdProductMo.getProductDetailPath() != null) {
+                String readFileResult = iseSvc.readFileByByte(prdProductMo.getProductDetailPath());
+                _log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
+                productListRo.setProductDetail(readFileResult);
+            }
+
             list.add(productListRo);
         }
         pageInfo = dozerMapper.map(selectPageInfo, PageInfo.class);
@@ -483,7 +464,7 @@ public class PrdProductSvcImpl
             PrdProductSpecMo addProductSpecMo = new PrdProductSpecMo();
             addProductSpecMo.setProductId(addProductMo.getId());
             addProductSpecMo.setMarketPrice(item.getPrice()); // 市场价格就是售价
-            addProductSpecMo.setName("暂无规格名称");
+            addProductSpecMo.setName(item.getName()); // 这里是导入的商品名称，因为导入的数据并没有规格名称。
             addProductSpecMo.setUnit(item.getUnit());
             if (prdProductSpecSvc.add(addProductSpecMo) != 1) {
                 throw new RuntimeException("添加一个新产品规格失败");
@@ -498,38 +479,39 @@ public class PrdProductSvcImpl
             }
             _log.info("添加一个产品规格编码成功");
             // 添加一条上线信息
-            OnlOnlineMo addOnlineMo = new OnlOnlineMo();
-            addOnlineMo.setId(_idWorker.getId()); // 这里生成以便下面获取
-            addOnlineMo.setSubjectType((byte) 0);
-            addOnlineMo.setOnlineTitle(item.getName());
-            addOnlineMo.setOnlineOrgId(517928358546243584l);// 线上微薄利的ID
-            addOnlineMo.setDeliverOrgId(517928358546243584l);// 线上微薄利的ID
-            addOnlineMo.setOpId(123456l);
-            addOnlineMo.setOnlineState((byte) 1);
-            addOnlineMo.setOnlineTime(new Date());
-            addOnlineMo.setProductId(addProductMo.getId()); // 线上原先这个值是上线ID
-            addOnlineMo.setIsBelow(true);
-            addOnlineMo.setIsOnline(false);
-            addOnlineMo.setIsOnlinePlatform(false);
-            if (onlOnlineSvc.importOnline(addOnlineMo) != 1) {
-                throw new RuntimeException("添加上线信息失败");
-            }
-            _log.info("添加上线信息成功");
-
-            OnlOnlineSpecMo addOnlineSpecMo = new OnlOnlineSpecMo();
-            addOnlineSpecMo.setOnlineId(addOnlineMo.getId());
-            addOnlineSpecMo.setProductSpecId(addProductSpecMo.getId());
-            addOnlineSpecMo.setSalePrice(item.getPrice());
-            addOnlineSpecMo.setCostPrice(item.getInPrice());
-            addOnlineSpecMo.setCashbackAmount(new BigDecimal("0"));
-            addOnlineSpecMo.setCurrentOnlineCount(item.getStock());
-            addOnlineSpecMo.setOnlineSpec(item.getName());
-            addOnlineSpecMo.setSeqNo(0);
-            addOnlineSpecMo.setSaleUnit(item.getUnit());
-            if (onlOnlineSpecSvc.add(addOnlineSpecMo).getResult().getCode() != 1) {
-                throw new RuntimeException("添加上线规格信息失败");
-            }
-            _log.info("添加上线规格信息成功");
+//            OnlOnlineMo addOnlineMo = new OnlOnlineMo();
+//            addOnlineMo.setId(_idWorker.getId()); // 这里生成以便下面获取
+//            addOnlineMo.setSubjectType((byte) 0);
+//            addOnlineMo.setOnlineTitle(item.getName());
+//            addOnlineMo.setOnlineOrgId(517928358546243584l);// 线上微薄利的ID
+//            addOnlineMo.setDeliverOrgId(517928358546243584l);// 线上微薄利的ID
+//            addOnlineMo.setOpId(123456l);
+//            addOnlineMo.setOnlineState((byte) 1);
+//            addOnlineMo.setOnlineTime(new Date());
+//            addOnlineMo.setProductId(addProductMo.getId()); // 线上原先这个值是上线ID
+//            addOnlineMo.setIsBelow(true);
+//            addOnlineMo.setIsOnline(false);
+//            addOnlineMo.setIsOnlinePlatform(false);
+//            if (onlOnlineSvc.importOnline(addOnlineMo) != 1) {
+//                throw new RuntimeException("添加上线信息失败");
+//            }
+//            _log.info("添加上线信息成功");
+//
+//            OnlOnlineSpecMo addOnlineSpecMo = new OnlOnlineSpecMo();
+//            addOnlineSpecMo.setOnlineId(addOnlineMo.getId());
+//            addOnlineSpecMo.setProductSpecId(addProductSpecMo.getId());
+//            addOnlineSpecMo.setSalePrice(item.getPrice());
+//            addOnlineSpecMo.setCostPrice(item.getInPrice());
+//            addOnlineSpecMo.setCashbackAmount(new BigDecimal("0"));
+//            addOnlineSpecMo.setCurrentOnlineCount(item.getStock());
+//            addOnlineSpecMo.setOnlineSpec(item.getName());
+//            addOnlineSpecMo.setSeqNo(0);
+//            addOnlineSpecMo.setSaleCount(new BigDecimal("0"));
+//            addOnlineSpecMo.setSaleUnit(item.getUnit());
+//            if (onlOnlineSpecSvc.add(addOnlineSpecMo).getResult().getCode() != 1) {
+//                throw new RuntimeException("添加上线规格信息失败");
+//            }
+//            _log.info("添加上线规格信息成功");
 
         }
         return new Ro(ResultDic.SUCCESS, "导入成功");
@@ -575,9 +557,9 @@ public class PrdProductSvcImpl
         _log.info("从产品中上线商品的上线信息为: to-{}", onlineTo);
 
         onlOnlineSvc.onlineToPos(onlineTo);
-        return  new Ro(ResultDic.SUCCESS, "从产品中上线商品成功");
+        return new Ro(ResultDic.SUCCESS, "从产品中上线商品成功");
     }
-    
+
     /**
      * 1：先获取产品信息
      * 2：获取规格信息
@@ -585,12 +567,14 @@ public class PrdProductSvcImpl
     @Override
     public GetProductRo getProductById(Long id) {
         GetProductRo result = new GetProductRo();
-        PrdProductMo mo =  super.getById(id);
-        _log.info("获取产品的结果为-{}",mo);
+        PrdProductMo mo = super.getById(id);
+        _log.info("获取产品的结果为-{}", mo);
         result.setProductName(mo.getProductName());
-        String           readFileResult = iseSvc.readFileByByte(mo.getProductDetailPath());
-        result.setProductDetail(readFileResult);
-        _log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
+        if (mo.getProductDetailPath() != null) {
+            String readFileResult = iseSvc.readFileByByte(mo.getProductDetailPath());
+            result.setProductDetail(readFileResult);
+            _log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
+        }
         return result;
     }
 }
