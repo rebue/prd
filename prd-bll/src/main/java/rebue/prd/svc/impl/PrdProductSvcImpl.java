@@ -35,7 +35,6 @@ import rebue.prd.mo.PrdProductSpecCodeMo;
 import rebue.prd.mo.PrdProductSpecMo;
 import rebue.prd.ro.GetProductRo;
 import rebue.prd.ro.PrdProductListRo;
-import rebue.prd.ro.ProductRo;
 import rebue.prd.svc.PrdProductCategorySvc;
 import rebue.prd.svc.PrdProductPicSvc;
 import rebue.prd.svc.PrdProductSpecCodeSvc;
