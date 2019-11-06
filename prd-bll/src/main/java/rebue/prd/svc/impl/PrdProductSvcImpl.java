@@ -33,7 +33,9 @@ import rebue.prd.mo.PrdProductCategoryMo;
 import rebue.prd.mo.PrdProductMo;
 import rebue.prd.mo.PrdProductSpecCodeMo;
 import rebue.prd.mo.PrdProductSpecMo;
+import rebue.prd.ro.GetProductRo;
 import rebue.prd.ro.PrdProductListRo;
+import rebue.prd.ro.ProductRo;
 import rebue.prd.svc.PrdProductCategorySvc;
 import rebue.prd.svc.PrdProductPicSvc;
 import rebue.prd.svc.PrdProductSpecCodeSvc;
@@ -574,6 +576,22 @@ public class PrdProductSvcImpl
         _log.info("从产品中上线商品的上线信息为: to-{}", onlineTo);
 
         onlOnlineSvc.onlineToPos(onlineTo);
-        return null;
+        return  new Ro(ResultDic.SUCCESS, "从产品中上线商品成功");
+    }
+    
+    /**
+     * 1：先获取产品信息
+     * 2：获取规格信息
+     */
+    @Override
+    public GetProductRo getProductById(Long id) {
+        GetProductRo result = new GetProductRo();
+        PrdProductMo mo =  super.getById(id);
+        _log.info("获取产品的结果为-{}",mo);
+        result.setProductName(mo.getProductName());
+        String           readFileResult = iseSvc.readFileByByte(mo.getProductDetailPath());
+        result.setProductDetail(readFileResult);
+        _log.info("分页查询产品信息读取产品详情文件的返回值为：{}", readFileResult);
+        return result;
     }
 }

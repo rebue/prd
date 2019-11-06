@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.pagehelper.PageInfo;
 
 import rebue.prd.mo.PrdProductMo;
+import rebue.prd.ro.GetProductRo;
 import rebue.prd.ro.PrdProductListRo;
+import rebue.prd.ro.ProductRo;
 import rebue.prd.svc.PrdProductSvc;
 import rebue.prd.to.AddProductTo;
 import rebue.prd.to.ImportTo;
@@ -241,6 +243,18 @@ public class PrdProductCtrl {
             ro.setMsg(e.getMessage());
             return ro;
         }
+    }
+    
+    
+    /**
+     * 根据id获取单个产品，与自定义的不一样的地方是返回值不一样。
+     *
+     */
+    @GetMapping("/prd/product/get-product-by-id")
+    GetProductRo getProductById(@RequestParam("id") java.lang.Long id) {
+        _log.info("获取单个产品信息的参数为-{}",id);
+        
+        return svc.getProductById(id);
     }
 
 }

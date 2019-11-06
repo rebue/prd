@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 
 import rebue.prd.jo.PrdProductJo;
 import rebue.prd.mo.PrdProductMo;
+import rebue.prd.ro.GetProductRo;
 import rebue.prd.ro.PrdProductListRo;
 import rebue.prd.to.AddProductTo;
 import rebue.prd.to.ImportTo;
@@ -71,4 +72,7 @@ public interface PrdProductSvc extends BaseSvc<java.lang.Long, PrdProductMo, Prd
      * @return
      */
     Ro onlineFormProduct(OnlineProductTo to);
+    
+    
+    GetProductRo  getProductById(Long id);
 }
