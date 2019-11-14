@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.dozermapper.core.Mapper;
 
+import rebue.onl.mo.OnlOnlineSpecMo;
 import rebue.onl.ro.OnlOnlineSpecInfoRo;
 import rebue.onl.svr.feign.OnlOnlineSpecSvc;
 import rebue.prd.dao.PrdProductSpecCodeDao;
@@ -107,12 +108,12 @@ public class PrdProductSpecCodeSvcImpl extends
             PrdProductSpecMo specResult = prdProductSpecSvc.getById(codeResult.get(0).getProductSpecId());
             _log.info("获取产品规格信息的结果为:-{}", specResult);
             // 获取上线规格信息
-            List<OnlOnlineSpecInfoRo> onlineSpecResult = onlOnlineSpecSvc
-                    .selectOnlineSpecByProductSpecId(specResult.getId());
+            List<OnlOnlineSpecMo> onlineSpecResult = onlOnlineSpecSvc
+                    .selectOnlineSpec(specResult.getId());
             if (onlineSpecResult.size() != 0) {
                 List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
                 PrdOnlineDetailRo       prdOnlineDetail  = new PrdOnlineDetailRo();
-                prdOnlineDetail.setOnlineSpecId(onlineSpecResult.get(0).getSpecId());
+                prdOnlineDetail.setOnlineSpecId(onlineSpecResult.get(0).getId());
                 prdOnlineDetail.setOnlineId(onlineSpecResult.get(0).getOnlineId());
                 prdOnlineDetail.setSalePrice(onlineSpecResult.get(0).getSalePrice());
                 prdOnlineDetail.setSaleUnit(specResult.getUnit());

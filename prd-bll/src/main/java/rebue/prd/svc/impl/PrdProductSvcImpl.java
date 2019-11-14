@@ -1,5 +1,6 @@
 package rebue.prd.svc.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,8 @@ import com.github.pagehelper.PageInfo;
 import rebue.ise.ro.SaveFileRo;
 import rebue.ise.svr.feign.IserSvc;
 import rebue.ise.to.SaveFileTo;
+import rebue.onl.mo.OnlOnlineMo;
+import rebue.onl.mo.OnlOnlineSpecMo;
 import rebue.onl.svr.feign.OnlOnlineSpecSvc;
 import rebue.onl.svr.feign.OnlOnlineSvc;
 import rebue.onl.to.AddOnlineTo;
@@ -479,39 +482,39 @@ public class PrdProductSvcImpl
             }
             _log.info("添加一个产品规格编码成功");
             // 添加一条上线信息
-//            OnlOnlineMo addOnlineMo = new OnlOnlineMo();
-//            addOnlineMo.setId(_idWorker.getId()); // 这里生成以便下面获取
-//            addOnlineMo.setSubjectType((byte) 0);
-//            addOnlineMo.setOnlineTitle(item.getName());
-//            addOnlineMo.setOnlineOrgId(517928358546243584l);// 线上微薄利的ID
-//            addOnlineMo.setDeliverOrgId(517928358546243584l);// 线上微薄利的ID
-//            addOnlineMo.setOpId(123456l);
-//            addOnlineMo.setOnlineState((byte) 1);
-//            addOnlineMo.setOnlineTime(new Date());
-//            addOnlineMo.setProductId(addProductMo.getId()); // 线上原先这个值是上线ID
-//            addOnlineMo.setIsBelow(true);
-//            addOnlineMo.setIsOnline(false);
-//            addOnlineMo.setIsOnlinePlatform(false);
-//            if (onlOnlineSvc.importOnline(addOnlineMo) != 1) {
-//                throw new RuntimeException("添加上线信息失败");
-//            }
-//            _log.info("添加上线信息成功");
-//
-//            OnlOnlineSpecMo addOnlineSpecMo = new OnlOnlineSpecMo();
-//            addOnlineSpecMo.setOnlineId(addOnlineMo.getId());
-//            addOnlineSpecMo.setProductSpecId(addProductSpecMo.getId());
-//            addOnlineSpecMo.setSalePrice(item.getPrice());
-//            addOnlineSpecMo.setCostPrice(item.getInPrice());
-//            addOnlineSpecMo.setCashbackAmount(new BigDecimal("0"));
-//            addOnlineSpecMo.setCurrentOnlineCount(item.getStock());
-//            addOnlineSpecMo.setOnlineSpec(item.getName());
-//            addOnlineSpecMo.setSeqNo(0);
-//            addOnlineSpecMo.setSaleCount(new BigDecimal("0"));
-//            addOnlineSpecMo.setSaleUnit(item.getUnit());
-//            if (onlOnlineSpecSvc.add(addOnlineSpecMo).getResult().getCode() != 1) {
-//                throw new RuntimeException("添加上线规格信息失败");
-//            }
-//            _log.info("添加上线规格信息成功");
+            OnlOnlineMo addOnlineMo = new OnlOnlineMo();
+            addOnlineMo.setId(_idWorker.getId()); // 这里生成以便下面获取
+            addOnlineMo.setSubjectType((byte) 0);
+            addOnlineMo.setOnlineTitle(item.getName());
+            addOnlineMo.setOnlineOrgId(517928358546243584l);// 线上微薄利的ID
+            addOnlineMo.setDeliverOrgId(517928358546243584l);// 线上微薄利的ID
+            addOnlineMo.setOpId(123456l);
+            addOnlineMo.setOnlineState((byte) 1);
+            addOnlineMo.setOnlineTime(new Date());
+            addOnlineMo.setProductId(addProductMo.getId()); // 线上原先这个值是上线ID
+            addOnlineMo.setIsBelow(true);
+            addOnlineMo.setIsOnline(false);
+            addOnlineMo.setIsOnlinePlatform(false);
+            if (onlOnlineSvc.importOnline(addOnlineMo) != 1) {
+                throw new RuntimeException("添加上线信息失败");
+            }
+            _log.info("添加上线信息成功");
+
+            OnlOnlineSpecMo addOnlineSpecMo = new OnlOnlineSpecMo();
+            addOnlineSpecMo.setOnlineId(addOnlineMo.getId());
+            addOnlineSpecMo.setProductSpecId(addProductSpecMo.getId());
+            addOnlineSpecMo.setSalePrice(item.getPrice());
+            addOnlineSpecMo.setCostPrice(item.getInPrice());
+            addOnlineSpecMo.setCashbackAmount(new BigDecimal("0"));
+            addOnlineSpecMo.setCurrentOnlineCount(item.getStock());
+            addOnlineSpecMo.setOnlineSpec(item.getName());
+            addOnlineSpecMo.setSeqNo(0);
+            addOnlineSpecMo.setSaleCount(new BigDecimal("0"));
+            addOnlineSpecMo.setSaleUnit(item.getUnit());
+            if (onlOnlineSpecSvc.add(addOnlineSpecMo).getResult().getCode() != 1) {
+                throw new RuntimeException("添加上线规格信息失败");
+            }
+            _log.info("添加上线规格信息成功");
 
         }
         return new Ro(ResultDic.SUCCESS, "导入成功");
