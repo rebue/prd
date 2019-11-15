@@ -22,8 +22,12 @@ import rebue.ise.svr.feign.IserSvc;
 import rebue.ise.to.SaveFileTo;
 import rebue.onl.mo.OnlOnlineMo;
 import rebue.onl.mo.OnlOnlineSpecMo;
+import rebue.onl.mo.OnlSearchCategoryMo;
+import rebue.onl.mo.OnlSearchCategoryOnlineMo;
 import rebue.onl.svr.feign.OnlOnlineSpecSvc;
 import rebue.onl.svr.feign.OnlOnlineSvc;
+import rebue.onl.svr.feign.OnlSearchCategoryOnlineSvc;
+import rebue.onl.svr.feign.OnlSearchCategorySvc;
 import rebue.onl.to.AddOnlineTo;
 import rebue.prd.dao.PrdProductDao;
 import rebue.prd.jo.PrdProductJo;
@@ -102,6 +106,12 @@ public class PrdProductSvcImpl
 
     @Resource
     private PrdProductCategoryMapper prdProductCategoryMapper;
+
+    @Resource
+    private OnlSearchCategorySvc onlSearchCategorySvc;
+
+    @Resource
+    private OnlSearchCategoryOnlineSvc onlSearchCategoryOnlineSvc;
 
     /**
      * @mbg.generated 自动生成，如需修改，请删除本行
@@ -429,13 +439,12 @@ public class PrdProductSvcImpl
             PrdProductCategoryMo result = prdProductCategorySvc.getOne(getOneMo);
             _log.info("查询分类的结果为:{}", result);
             // 添加一个分类
+            String code = "";
             if (result == null) {
                 List<PrdProductCategoryMo> getLengthResult = prdProductCategorySvc.list(new PrdProductCategoryMo());
                 PrdProductCategoryMo addMo = new PrdProductCategoryMo();
-                String code;
-                if (getLengthResult.size() < 9) {
+                if (getLengthResult.size() <= 9) {
                     code = "0" + String.valueOf(getLengthResult.size());
-
                 } else {
                     code = String.valueOf(getLengthResult.size());
                 }
@@ -447,9 +456,10 @@ public class PrdProductSvcImpl
                 addMo.setFullName(item.getClassName());
                 _log.info("添加一个新分类的参数为-{}", addMo);
                 if (prdProductCategorySvc.add(addMo) != 1) {
-                    throw new RuntimeException("添加一个新分类失败");
+                    throw new RuntimeException("添加一个新产品分类失败");
                 }
                 _log.info("添加一个新分类成功");
+
                 result = addMo;
             }
             // 添加一个产品
@@ -500,6 +510,31 @@ public class PrdProductSvcImpl
             }
             _log.info("添加上线信息成功");
 
+            // 添加一个商品分类
+            if (code != "") {
+                OnlSearchCategoryMo addSearch = new OnlSearchCategoryMo();
+                addSearch.setId(_idWorker.getId());
+                addSearch.setCode(code);
+                addSearch.setIsEnabled(true);
+                addSearch.setName(item.getClassName());
+                addSearch.setSellerId(517928358546243584l);// 线上微薄利的ID
+                addSearch.setShopId(670157330226085890l);// 线上龙岗母婴店id
+                _log.info("添加商品分类addSearch-{}",addSearch);
+                if (onlSearchCategorySvc.addSearchCategory(addSearch) != 1) {
+                    throw new RuntimeException("添加一个新商品分类失败");
+                }
+                _log.info("添加一个新商品分类成功");
+
+                // 添加上线搜索分类
+                OnlSearchCategoryOnlineMo searchCategoryOnline = new OnlSearchCategoryOnlineMo();
+                searchCategoryOnline.setOnlineId(addOnlineMo.getId());
+                searchCategoryOnline.setSearchCategoryId(addSearch.getId());
+                if (onlSearchCategoryOnlineSvc.add(searchCategoryOnline).getResult().getCode() != 1) {
+                    throw new RuntimeException("添加上线搜索分类失败");
+                }
+            }
+
+            // 添加上线规格
             OnlOnlineSpecMo addOnlineSpecMo = new OnlOnlineSpecMo();
             addOnlineSpecMo.setOnlineId(addOnlineMo.getId());
             addOnlineSpecMo.setProductSpecId(addProductSpecMo.getId());
