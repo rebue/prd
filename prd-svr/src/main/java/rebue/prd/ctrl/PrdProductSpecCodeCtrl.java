@@ -223,7 +223,7 @@ public class PrdProductSpecCodeCtrl {
     }
 
     @GetMapping("/prd/productspeccode/select-by-code")
-    public List<PrdProductSpecCodeMo> selectByCode(String code) {
+    public List<PrdProductSpecCodeMo> selectByCode(@RequestParam("code") String code) {
         _log.info(" selectByCode code：{}", code);
         return svc.selectByCode(code);
     }
