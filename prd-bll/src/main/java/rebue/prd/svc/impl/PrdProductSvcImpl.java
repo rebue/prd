@@ -146,7 +146,7 @@ public class PrdProductSvcImpl
         }
 
         // 产品ID
-        Long productId = _idWorker.getId();
+        Long         productId = _idWorker.getId();
         PrdProductMo productMo = new PrdProductMo();
 
         if (to.getProductDetail() != null) {
@@ -361,9 +361,9 @@ public class PrdProductSvcImpl
     public PageInfo<PrdProductListRo> pageList(PrdProductMo mo, Integer pageNum, final int pageSize,
             final String orderBy) {
         _log.info("分页查询产品信息的参数为：PrdProductMo-{}, pageNUm-{}, pageSize-{}, orderBy-{}", mo, pageNum, pageSize, orderBy);
-        PageInfo<PrdProductListRo> pageInfo = new PageInfo<PrdProductListRo>();
-        List<PrdProductListRo> list = new ArrayList<PrdProductListRo>();
-        PageInfo<PrdProductMo> selectPageInfo = PageHelper.startPage(pageNum, pageSize, orderBy)
+        PageInfo<PrdProductListRo> pageInfo       = new PageInfo<PrdProductListRo>();
+        List<PrdProductListRo>     list           = new ArrayList<PrdProductListRo>();
+        PageInfo<PrdProductMo>     selectPageInfo = PageHelper.startPage(pageNum, pageSize, orderBy)
                 .doSelectPageInfo(() -> _mapper.selectSelective(mo));
         for (PrdProductMo prdProductMo : selectPageInfo.getList()) {
             PrdProductListRo productListRo = dozerMapper.map(prdProductMo, PrdProductListRo.class);
@@ -390,7 +390,7 @@ public class PrdProductSvcImpl
      * 禁用或启用产品
      * 
      * @param id
-     *            产品ID
+     *                  产品ID
      * @param isEnabled
      * @return
      */
@@ -442,7 +442,7 @@ public class PrdProductSvcImpl
             String code = "";
             if (result == null) {
                 List<PrdProductCategoryMo> getLengthResult = prdProductCategorySvc.list(new PrdProductCategoryMo());
-                PrdProductCategoryMo addMo = new PrdProductCategoryMo();
+                PrdProductCategoryMo       addMo           = new PrdProductCategoryMo();
                 if (getLengthResult.size() <= 9) {
                     code = "0" + String.valueOf(getLengthResult.size());
                 } else {
@@ -519,7 +519,7 @@ public class PrdProductSvcImpl
                 addSearch.setName(item.getClassName());
                 addSearch.setSellerId(517928358546243584l);// 线上微薄利的ID
                 addSearch.setShopId(670157330226085890l);// 线上龙岗母婴店id
-                _log.info("添加商品分类addSearch-{}",addSearch);
+                _log.info("添加商品分类addSearch-{}", addSearch);
                 if (onlSearchCategorySvc.addSearchCategory(addSearch) != 1) {
                     throw new RuntimeException("添加一个新商品分类失败");
                 }
@@ -582,6 +582,7 @@ public class PrdProductSvcImpl
         onlineTo.setSubjectType(to.getSubjectType());
         onlineTo.setDeliverOrgId(to.getDeliverOrgId());
         onlineTo.setIsEditSupplier(to.getIsEditSupplier());
+        onlineTo.setIsWeighGoods(to.getIsWeighGoods());
         // 上线规格
         onlineTo.setOnlineSpecs(to.getOnlineSpecs());
         // 上线规格属性
@@ -605,7 +606,7 @@ public class PrdProductSvcImpl
     @Override
     public GetProductRo getProductById(Long id) {
         GetProductRo result = new GetProductRo();
-        PrdProductMo mo = super.getById(id);
+        PrdProductMo mo     = super.getById(id);
         _log.info("获取产品的结果为-{}", mo);
         result.setProductName(mo.getProductName());
         if (mo.getProductDetailPath() != null) {

@@ -96,4 +96,9 @@ public class OnlineProductTo {
      * 搜索分类id
      */
     private List<Long> classificationId;
+
+    /**
+     * 是否是称重商品
+     */
+    private Boolean isWeighGoods;
 }
