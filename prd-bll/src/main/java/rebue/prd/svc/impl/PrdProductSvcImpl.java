@@ -3,7 +3,9 @@ package rebue.prd.svc.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -20,15 +22,13 @@ import com.github.pagehelper.PageInfo;
 import rebue.ise.ro.SaveFileRo;
 import rebue.ise.svr.feign.IserSvc;
 import rebue.ise.to.SaveFileTo;
-import rebue.onl.mo.OnlOnlineMo;
-import rebue.onl.mo.OnlOnlineSpecMo;
-import rebue.onl.mo.OnlSearchCategoryMo;
-import rebue.onl.mo.OnlSearchCategoryOnlineMo;
+import rebue.onl.ro.AddOnlineRo;
 import rebue.onl.svr.feign.OnlOnlineSpecSvc;
 import rebue.onl.svr.feign.OnlOnlineSvc;
 import rebue.onl.svr.feign.OnlSearchCategoryOnlineSvc;
 import rebue.onl.svr.feign.OnlSearchCategorySvc;
 import rebue.onl.to.AddOnlineTo;
+import rebue.onl.to.OnlOnlineSpecTo;
 import rebue.prd.dao.PrdProductDao;
 import rebue.prd.jo.PrdProductJo;
 import rebue.prd.mapper.PrdProductCategoryMapper;
@@ -492,64 +492,73 @@ public class PrdProductSvcImpl
             }
             _log.info("添加一个产品规格编码成功");
             // 添加一条上线信息
-            OnlOnlineMo addOnlineMo = new OnlOnlineMo();
-            addOnlineMo.setId(_idWorker.getId()); // 这里生成以便下面获取
-            addOnlineMo.setSubjectType((byte) 0);
-            addOnlineMo.setOnlineTitle(item.getName());
-            addOnlineMo.setOnlineOrgId(517928358546243584l);// 线上微薄利的ID
-            addOnlineMo.setDeliverOrgId(517928358546243584l);// 线上微薄利的ID
-            addOnlineMo.setOpId(123456l);
-            addOnlineMo.setOnlineState((byte) 1);
-            addOnlineMo.setOnlineTime(new Date());
-            addOnlineMo.setProductId(addProductMo.getId()); // 线上原先这个值是上线ID
-            addOnlineMo.setIsBelow(true);
-            addOnlineMo.setIsOnline(false);
-            addOnlineMo.setIsOnlinePlatform(false);
-            if (onlOnlineSvc.importOnline(addOnlineMo) != 1) {
+            AddOnlineTo addTo = new AddOnlineTo();
+            addTo.setSubjectType((byte) 0);
+            addTo.setOnlineName(item.getName());
+            addTo.setOnlineOrgId(517928358546243584L);// 线上微薄利的ID
+            addTo.setDeliverOrgId(517928358546243584L);// 线上微薄利的ID
+            addTo.setSupplierId(517928358546243584L);
+            addTo.setIsEditSupplier((byte) 0);
+            addTo.setOpId(123456l);
+            addTo.setProductId(addProductMo.getId());
+            addTo.setIsBelowOnline((byte) (1));
+            addTo.setIsOnlinePlatform((byte) 0);
+            addTo.setIsWeighGoods(false);
+
+            List<Long> classificationId = new ArrayList<Long>();
+            classificationId.add(665442046776967171L);
+            addTo.setClassificationId(classificationId);
+            addTo.setOnlineDetail("商品导入");
+            addTo.setGoodsQsmm("/damaiQsmm/2018/10/09/19/37/AFB2DF928C4B4B07A7CB6F5D2393FFA9.jpg");
+            List<Map<String, Object>> slideshow = new ArrayList<Map<String, Object>>();
+            Map<String, Object>       map       = new HashMap<String, Object>();
+            map.put("slideshow", "/damaiSlideshow/2018/10/09/19/37/A086D0EEAAD94C12A676DA88FFFBA2D8.jpg");
+            slideshow.add(map);
+            addTo.setSlideshow(slideshow);
+            // 添加上线规格
+            OnlOnlineSpecTo specTo = new OnlOnlineSpecTo();
+            specTo.setProductSpecId(addProductSpecMo.getId());
+            specTo.setOnlineSpec(item.getName());
+            specTo.setSalePrice(item.getPrice());
+            specTo.setCostPrice(item.getInPrice());
+            specTo.setCashbackAmount(new BigDecimal("0"));
+            specTo.setCurrentOnlineCount(item.getStock());
+            specTo.setSeqNo(0);
+            specTo.setSaleCount(new BigDecimal("0"));
+            specTo.setSaleUnit(item.getUnit());
+            List<OnlOnlineSpecTo> onlineSpecs = new ArrayList<OnlOnlineSpecTo>();
+            onlineSpecs.add(specTo);
+            addTo.setOnlineSpecs(onlineSpecs);
+
+            AddOnlineRo ro = onlOnlineSvc.onlineToPos(addTo);
+            if (ro.getResult().getCode() != 1) {
                 throw new RuntimeException("添加上线信息失败");
             }
             _log.info("添加上线信息成功");
 
-            // 添加一个商品分类
-            if (code != "") {
-                OnlSearchCategoryMo addSearch = new OnlSearchCategoryMo();
-                addSearch.setId(_idWorker.getId());
-                addSearch.setCode(code);
-                addSearch.setIsEnabled(true);
-                addSearch.setName(item.getClassName());
-                addSearch.setSellerId(517928358546243584l);// 线上微薄利的ID
-                addSearch.setShopId(670157330226085890l);// 线上龙岗母婴店id
-                _log.info("添加商品分类addSearch-{}", addSearch);
-                if (onlSearchCategorySvc.addSearchCategory(addSearch) != 1) {
-                    throw new RuntimeException("添加一个新商品分类失败");
-                }
-                _log.info("添加一个新商品分类成功");
-
-                // 添加上线搜索分类
-                OnlSearchCategoryOnlineMo searchCategoryOnline = new OnlSearchCategoryOnlineMo();
-                searchCategoryOnline.setOnlineId(addOnlineMo.getId());
-                searchCategoryOnline.setSearchCategoryId(addSearch.getId());
-                if (onlSearchCategoryOnlineSvc.add(searchCategoryOnline).getResult().getCode() != 1) {
-                    throw new RuntimeException("添加上线搜索分类失败");
-                }
-            }
-
-            // 添加上线规格
-            OnlOnlineSpecMo addOnlineSpecMo = new OnlOnlineSpecMo();
-            addOnlineSpecMo.setOnlineId(addOnlineMo.getId());
-            addOnlineSpecMo.setProductSpecId(addProductSpecMo.getId());
-            addOnlineSpecMo.setSalePrice(item.getPrice());
-            addOnlineSpecMo.setCostPrice(item.getInPrice());
-            addOnlineSpecMo.setCashbackAmount(new BigDecimal("0"));
-            addOnlineSpecMo.setCurrentOnlineCount(item.getStock());
-            addOnlineSpecMo.setOnlineSpec(item.getName());
-            addOnlineSpecMo.setSeqNo(0);
-            addOnlineSpecMo.setSaleCount(new BigDecimal("0"));
-            addOnlineSpecMo.setSaleUnit(item.getUnit());
-            if (onlOnlineSpecSvc.add(addOnlineSpecMo).getResult().getCode() != 1) {
-                throw new RuntimeException("添加上线规格信息失败");
-            }
-            _log.info("添加上线规格信息成功");
+//            // 添加一个商品分类
+//            if (code != "") {
+//                OnlSearchCategoryMo addSearch = new OnlSearchCategoryMo();
+//                addSearch.setId(_idWorker.getId());
+//                addSearch.setCode(code);
+//                addSearch.setIsEnabled(true);
+//                addSearch.setName(item.getClassName());
+//                addSearch.setSellerId(517928358546243584L);// 线上微薄利的ID
+//                addSearch.setShopId(604557995266801664L);// 线上微薄利id
+//                _log.info("添加商品分类addSearch-{}", addSearch);
+//                if (onlSearchCategorySvc.addSearchCategory(addSearch) != 1) {
+//                    throw new RuntimeException("添加一个新商品分类失败");
+//                }
+//                _log.info("添加一个新商品分类成功");
+//                
+//                // 添加上线搜索分类
+//                OnlSearchCategoryOnlineMo searchCategoryOnline = new OnlSearchCategoryOnlineMo();
+//                searchCategoryOnline.setOnlineId(addOnlineMo.getId());
+//                searchCategoryOnline.setSearchCategoryId(addSearch.getId());
+//                if (onlSearchCategoryOnlineSvc.add(searchCategoryOnline).getResult().getCode() != 1) {
+//                    throw new RuntimeException("添加上线搜索分类失败");
+//                }
+//            }
 
         }
         return new Ro(ResultDic.SUCCESS, "导入成功");
