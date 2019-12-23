@@ -433,6 +433,10 @@ public class PrdProductSvcImpl
     public Ro importProduct(ImportTo to) {
 
         for (ImportProductTo item : to.getImportProduct()) {
+
+            Long productId     = null;
+            Long productSpecId = null;
+
             PrdProductCategoryMo getOneMo = new PrdProductCategoryMo();
             getOneMo.setName(item.getClassName());
             _log.info("查询分类的参数mo-{}", getOneMo);
@@ -451,7 +455,7 @@ public class PrdProductSvcImpl
                 addMo.setName(item.getClassName());
                 addMo.setCode(code);
                 addMo.setIsEnabled(true);
-                addMo.setOpId(123456l);
+                addMo.setOpId(1234567l);
                 addMo.setCreateTime(new Date());
                 addMo.setFullName(item.getClassName());
                 _log.info("添加一个新分类的参数为-{}", addMo);
@@ -462,51 +466,75 @@ public class PrdProductSvcImpl
 
                 result = addMo;
             }
-            // 添加一个产品
             PrdProductMo addProductMo = new PrdProductMo();
-            addProductMo.setCategoryId(result.getId());
-            addProductMo.setProductName(item.getName());
-            addProductMo.setIsEnabled(true);
-            addProductMo.setOpId(123456l);
-            addProductMo.setCreateTime(new Date());
-            if (this.add(addProductMo) != 1) {
-                throw new RuntimeException("添加一个新产品失败");
+
+            PrdProductMo productseach = new PrdProductMo();
+            productseach.setProductName(item.getName());
+            List<PrdProductMo> prdProductList = this.list(productseach);
+
+            if (prdProductList.size() != 0) {
+                productId = prdProductList.get(0).getId();
+            } else {
+                // 添加一个产品
+                addProductMo.setCategoryId(result.getId());
+                addProductMo.setProductName(item.getName());
+                addProductMo.setIsEnabled(true);
+                addProductMo.setOpId(1234567l);
+                addProductMo.setCreateTime(new Date());
+                if (this.add(addProductMo) != 1) {
+                    throw new RuntimeException("添加一个新产品失败");
+                }
+                _log.info("添加一个新产品成功");
+                productId = addProductMo.getId();
             }
-            _log.info("添加一个新产品成功");
-            // 添加一个产品规格
+
+            PrdProductSpecMo seach = new PrdProductSpecMo();
+            seach.setName(item.getName());
+
+            List<PrdProductSpecMo> prdProductSpecList = prdProductSpecSvc.list(seach);
+
             PrdProductSpecMo addProductSpecMo = new PrdProductSpecMo();
-            addProductSpecMo.setProductId(addProductMo.getId());
-            addProductSpecMo.setMarketPrice(item.getPrice()); // 市场价格就是售价
-            addProductSpecMo.setName(item.getName()); // 这里是导入的商品名称，因为导入的数据并没有规格名称。
-            addProductSpecMo.setUnit(item.getUnit());
-            if (prdProductSpecSvc.add(addProductSpecMo) != 1) {
-                throw new RuntimeException("添加一个新产品规格失败");
+
+            if (prdProductSpecList.size() != 0) {
+                productSpecId = prdProductSpecList.get(0).getId();
+            } else {
+                // 添加一个产品规格
+                addProductSpecMo.setProductId(productId);
+                addProductSpecMo.setMarketPrice(item.getPrice()); // 市场价格就是售价
+                addProductSpecMo.setName(item.getName()); // 这里是导入的商品名称，因为导入的数据并没有规格名称。
+                addProductSpecMo.setUnit(item.getUnit());
+                if (prdProductSpecSvc.add(addProductSpecMo) != 1) {
+                    throw new RuntimeException("添加一个新产品规格失败");
+                }
+                _log.info("添加一个新产品规格成功");
+                productSpecId = addProductSpecMo.getId();
+                // 添加一个产品规格编码
+                PrdProductSpecCodeMo addProductSpecCodeMo = new PrdProductSpecCodeMo();
+                addProductSpecCodeMo.setCode(item.getGoodCode());
+                addProductSpecCodeMo.setProductSpecId(productSpecId);
+                if (prdProductSpecCodeSvc.add(addProductSpecCodeMo) != 1) {
+                    throw new RuntimeException("添加一个产品规格编码失败");
+                }
             }
-            _log.info("添加一个新产品规格成功");
-            // 添加一个产品规格编码
-            PrdProductSpecCodeMo addProductSpecCodeMo = new PrdProductSpecCodeMo();
-            addProductSpecCodeMo.setCode(item.getGoodCode());
-            addProductSpecCodeMo.setProductSpecId(addProductSpecMo.getId());
-            if (prdProductSpecCodeSvc.add(addProductSpecCodeMo) != 1) {
-                throw new RuntimeException("添加一个产品规格编码失败");
-            }
+
             _log.info("添加一个产品规格编码成功");
             // 添加一条上线信息
             AddOnlineTo addTo = new AddOnlineTo();
-            addTo.setSubjectType((byte) 0);
+            addTo.setSubjectType((byte) 2);
             addTo.setOnlineName(item.getName());
             addTo.setOnlineOrgId(517928358546243584L);// 线上微薄利的ID
             addTo.setDeliverOrgId(517928358546243584L);// 线上微薄利的ID
             addTo.setSupplierId(517928358546243584L);
             addTo.setIsEditSupplier((byte) 0);
-            addTo.setOpId(123456l);
-            addTo.setProductId(addProductMo.getId());
+            addTo.setOpId(1234567l);
+            addTo.setProductId(productId);
             addTo.setIsBelowOnline((byte) (1));
             addTo.setIsOnlinePlatform((byte) 0);
             addTo.setIsWeighGoods(false);
 
             List<Long> classificationId = new ArrayList<Long>();
             classificationId.add(665442046776967171L);
+//            classificationId.add(670418840475271311L); //线下
             addTo.setClassificationId(classificationId);
             addTo.setOnlineDetail("商品导入");
             addTo.setGoodsQsmm("/damaiQsmm/2018/10/09/19/37/AFB2DF928C4B4B07A7CB6F5D2393FFA9.jpg");
@@ -517,11 +545,11 @@ public class PrdProductSvcImpl
             addTo.setSlideshow(slideshow);
             // 添加上线规格
             OnlOnlineSpecTo specTo = new OnlOnlineSpecTo();
-            specTo.setProductSpecId(addProductSpecMo.getId());
+            specTo.setProductSpecId(productSpecId);
             specTo.setOnlineSpec(item.getName());
             specTo.setSalePrice(item.getPrice());
             specTo.setCostPrice(item.getInPrice());
-            specTo.setCashbackAmount(new BigDecimal("0"));
+            specTo.setCashbackAmount(item.getInPrice().divide(BigDecimal.TEN));
             specTo.setCurrentOnlineCount(item.getStock());
             specTo.setSeqNo(0);
             specTo.setSaleCount(new BigDecimal("0"));
