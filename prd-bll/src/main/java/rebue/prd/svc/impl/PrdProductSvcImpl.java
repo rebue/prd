@@ -549,7 +549,7 @@ public class PrdProductSvcImpl
             specTo.setOnlineSpec(item.getName());
             specTo.setSalePrice(item.getPrice());
             specTo.setCostPrice(item.getInPrice());
-            specTo.setCashbackAmount(item.getInPrice().divide(BigDecimal.TEN));
+            specTo.setCashbackAmount(item.getPrice().divide(BigDecimal.TEN));
             specTo.setCurrentOnlineCount(item.getStock());
             specTo.setSeqNo(0);
             specTo.setSaleCount(new BigDecimal("0"));
