@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import rebue.prd.mo.PrdProductCategoryMo;
-import rebue.prd.mo.PrdProductMo;
 import rebue.robotech.mapper.MybatisBaseMapper;
 
 @Mapper
@@ -84,7 +83,7 @@ public interface PrdProductCategoryMapper extends MybatisBaseMapper<PrdProductCa
      *
      * @return
      */
-    @Select("SELECT * FROM PRD_PRODUCT_CATEGORY where code like '__' and IS_ENABLED = true")
+    @Select("SELECT * FROM PRD_PRODUCT_CATEGORY where IS_ENABLED = true and code like '__' or code like '___'  ")
     List<PrdProductCategoryMo> selectTopProductCategory();
 
     /**
@@ -111,8 +110,7 @@ public interface PrdProductCategoryMapper extends MybatisBaseMapper<PrdProductCa
      */
     @Update("update PRD_PRODUCT_CATEGORY set IS_ENABLED=#{isEnabled,jdbcType=TINYINT} where CODE like '${code}%'")
     int enable(@Param("code") String code, @Param("isEnabled") Boolean isEnabled);
-    
-    
+
     @Select("select * from PRD_PRODUCT_CATEGORY where code like '${code}__'")
     PrdProductCategoryMo getPrdProductCategoryByCode(@Param("code") String code);
 }
