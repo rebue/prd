@@ -35,6 +35,11 @@
 				<artifactId>onl-svr-feign</artifactId>
 				<version>1.1.0</version>
 			</dependency>
+			<dependency>
+				<groupId>com.github.rebue.slr</groupId>
+				<artifactId>slr-svr-feign</artifactId>
+				<version>1.1.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<modules>

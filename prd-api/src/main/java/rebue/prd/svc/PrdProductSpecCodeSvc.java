@@ -5,6 +5,9 @@ import java.util.List;
 import rebue.prd.jo.PrdProductSpecCodeJo;
 import rebue.prd.mo.PrdProductSpecCodeMo;
 import rebue.prd.ro.BarcodeRo;
+import rebue.prd.ro.PrdDetailRo;
+import rebue.prd.to.AddonlineByCodeTo;
+import rebue.robotech.ro.Ro;
 import rebue.robotech.svc.BaseSvc;
 
 /**
@@ -23,4 +26,20 @@ public interface PrdProductSpecCodeSvc extends BaseSvc<java.lang.Long, PrdProduc
      * @return
      */
     List<PrdProductSpecCodeMo> selectByCode(String code);
+
+    /**
+     * 根据条码查询产品
+     * 
+     * @param Code
+     * @return
+     */
+    PrdDetailRo getDetailByCode(String Code);
+
+    /**
+     * 根据条码上线商品
+     * 
+     * @param to
+     * @return
+     */
+    Ro addOnlineBycode(AddonlineByCodeTo to);
 }

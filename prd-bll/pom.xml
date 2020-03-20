@@ -27,6 +27,11 @@
 			<groupId>com.github.rebue.onl</groupId>
 			<artifactId>onl-svr-feign</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.github.rebue.slr</groupId>
+			<artifactId>slr-svr-feign</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.github.rebue.robotech</groupId>

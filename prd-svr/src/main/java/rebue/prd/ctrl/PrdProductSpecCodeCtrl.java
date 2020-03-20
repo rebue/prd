@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.pagehelper.PageInfo;
 
 import rebue.prd.mo.PrdProductSpecCodeMo;
+import rebue.prd.ro.AddOnlineBycodeRo;
 import rebue.prd.ro.BarcodeRo;
+import rebue.prd.ro.PrdDetailRo;
 import rebue.prd.svc.PrdProductSpecCodeSvc;
+import rebue.prd.to.AddonlineByCodeTo;
 import rebue.robotech.dic.ResultDic;
 import rebue.robotech.ro.IdRo;
 import rebue.robotech.ro.Ro;
@@ -227,4 +230,26 @@ public class PrdProductSpecCodeCtrl {
         _log.info(" selectByCode code：{}", code);
         return svc.selectByCode(code);
     }
+
+    @GetMapping("/prd/productspeccode/get-detail-by-code")
+    PrdDetailRo getDetailByCode(String code) {
+        _log.info(" getDetailByCode Code：{}", code);
+        return svc.getDetailByCode(code);
+    }
+
+    /**
+     * 根据条码上线商品
+     * 
+     * @return
+     */
+    @PostMapping("/prd/productspeccode/add-online-by-code")
+    AddOnlineBycodeRo addOnlineBycode(@RequestBody final AddonlineByCodeTo to) {
+        _log.info("addOnlineBycode to-{}", to);
+        AddOnlineBycodeRo ro    = new AddOnlineBycodeRo();
+        Ro                addro = svc.addOnlineBycode(to);
+        ro.setMsg(addro.getMsg());
+        ro.setResult((byte) addro.getResult().getCode());
+        return ro;
+    }
+
 }
