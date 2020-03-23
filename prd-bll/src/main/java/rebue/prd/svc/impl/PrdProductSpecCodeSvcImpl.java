@@ -125,7 +125,7 @@ public class PrdProductSpecCodeSvcImpl extends
      * 这里的两段注释是因为不上线的商品不给买
      */
     @Override
-    public BarcodeRo getGoodsDetailByBarcode(String barcode) {
+    public BarcodeRo getGoodsDetailByBarcode(String barcode,String shopId) {
         BarcodeRo            result    = new BarcodeRo();
         PrdProductSpecCodeMo getCodeMo = new PrdProductSpecCodeMo();
         getCodeMo.setCode(barcode);
@@ -136,7 +136,7 @@ public class PrdProductSpecCodeSvcImpl extends
             PrdProductSpecMo specResult = prdProductSpecSvc.getById(codeResult.get(0).getProductSpecId());
             _log.info("获取产品规格信息的结果为:-{}", specResult);
             // 获取上线规格信息
-            List<OnlOnlineSpecMo> onlineSpecResult = onlOnlineSpecSvc.selectOnlineSpec(specResult.getId());
+            List<OnlOnlineSpecMo> onlineSpecResult = onlOnlineSpecSvc.selectOnlineSpec(specResult.getId(),Long.valueOf(shopId));
             if (onlineSpecResult.size() != 0) {
                 List<PrdOnlineDetailRo> onlineDetailList = new ArrayList<PrdOnlineDetailRo>();
                 PrdOnlineDetailRo       prdOnlineDetail  = new PrdOnlineDetailRo();
@@ -343,13 +343,16 @@ public class PrdProductSpecCodeSvcImpl extends
         PrdProductSpecCodeMo codeMo = new PrdProductSpecCodeMo();
         codeMo.setProductSpecId(ProductSpecId);
         codeMo.setCode(to.getBarcode());
-        codeMo.setId(_idWorker.getId());
-        int codeResult = this.add(codeMo);
-        if (codeResult != 1) {
-            ro.setResult(ResultDic.FAIL);
-            ro.setMsg("添加产品规格编码失败");
-            return ro;
+        if(this.getOne(codeMo) == null) {
+            codeMo.setId(_idWorker.getId());
+            int codeResult = this.add(codeMo);
+            if (codeResult != 1) {
+                ro.setResult(ResultDic.FAIL);
+                ro.setMsg("添加产品规格编码失败");
+                return ro;
+            }
         }
+       
         // 上线
         AddOnlineByPosTo posTo = new AddOnlineByPosTo();
         posTo.setIsWeighGoods(to.getIsWeighGoods());

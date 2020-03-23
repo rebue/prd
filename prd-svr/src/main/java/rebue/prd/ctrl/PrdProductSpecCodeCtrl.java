@@ -220,9 +220,9 @@ public class PrdProductSpecCodeCtrl {
     }
 
     @GetMapping("/prd/productspeccode/barcode")
-    BarcodeRo getGoodsDetailByBarcode(String barcode) {
-        _log.info(" getGoodsDetailByBarcode barcode：{}", barcode);
-        return svc.getGoodsDetailByBarcode(barcode);
+    BarcodeRo getGoodsDetailByBarcode(String barcode,String shopId) {
+        _log.info(" getGoodsDetailByBarcode barcode：{},ShopId:{}", barcode,shopId);
+        return svc.getGoodsDetailByBarcode(barcode,shopId);
     }
 
     @GetMapping("/prd/productspeccode/select-by-code")

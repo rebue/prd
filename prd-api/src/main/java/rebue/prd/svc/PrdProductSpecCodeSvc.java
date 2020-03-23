@@ -17,7 +17,7 @@ import rebue.robotech.svc.BaseSvc;
  */
 public interface PrdProductSpecCodeSvc extends BaseSvc<java.lang.Long, PrdProductSpecCodeMo, PrdProductSpecCodeJo> {
 
-    BarcodeRo getGoodsDetailByBarcode(String barcode);
+    BarcodeRo getGoodsDetailByBarcode(String barcode,String shopId);
 
     /**
      * 根据条码后4位模糊查找
